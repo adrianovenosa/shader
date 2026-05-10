@@ -1,6 +1,7 @@
 "use client"
 
 import { useRef } from "react"
+import type { ChangeEvent } from "react"
 import type { ShaderParams } from "./shader-lines"
 
 interface ShaderControlsProps {
@@ -19,15 +20,22 @@ export function ShaderControls({
   onImageUpload,
 }: ShaderControlsProps) {
   const fileRef = useRef<HTMLInputElement>(null)
+  const prevUrlRef = useRef<string | null>(null)
 
   const set = (key: keyof ShaderParams) =>
-    (e: React.ChangeEvent<HTMLInputElement>) =>
-      onChange({ ...params, [key]: parseFloat(e.target.value) })
+    (e: ChangeEvent<HTMLInputElement>) => {
+      const raw = parseFloat(e.target.value)
+      onChange({ ...params, [key]: key === "lines" ? Math.round(raw) : raw })
+    }
 
-  const handleFile = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFile = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (!file) return
-    onImageUpload(URL.createObjectURL(file))
+    if (prevUrlRef.current) URL.revokeObjectURL(prevUrlRef.current)
+    const url = URL.createObjectURL(file)
+    prevUrlRef.current = url
+    onImageUpload(url)
+    e.target.value = ""
   }
 
   return (
@@ -43,6 +51,7 @@ export function ShaderControls({
 
       {/* Sliding panel */}
       <div
+        aria-hidden={!open}
         className={[
           "absolute top-11 right-0 w-56",
           "bg-black/80 backdrop-blur-md border border-white/10 rounded-2xl p-4",
@@ -96,7 +105,7 @@ export function ShaderControls({
             type="range" min={0} max={360} step={1}
             value={params.hue}
             onChange={set("hue")}
-            className="w-full h-1 rounded-full cursor-pointer appearance-none"
+            className="w-full h-1 rounded-full cursor-pointer accent-blue-400"
             style={{
               background:
                 "linear-gradient(90deg,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00)",
@@ -135,7 +144,7 @@ function SliderRow({
   max: number
   step: number
   value: number
-  onChange: (e: React.ChangeEvent<HTMLInputElement>) => void
+  onChange: (e: ChangeEvent<HTMLInputElement>) => void
 }) {
   return (
     <div className="flex flex-col gap-1.5">
