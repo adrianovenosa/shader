@@ -28,6 +28,7 @@ interface ShaderAnimationProps {
 
 export function ShaderAnimation({ params }: ShaderAnimationProps) {
   const containerRef = useRef<HTMLDivElement>(null)
+  const onResizeRef = useRef<(() => void) | null>(null)
   const sceneRef = useRef<{
     camera: any
     scene: any
@@ -35,6 +36,8 @@ export function ShaderAnimation({ params }: ShaderAnimationProps) {
     uniforms: any
     animationId: number | null
     speed: number
+    geometry: any
+    material: any
   }>({
     camera: null,
     scene: null,
@@ -42,19 +45,24 @@ export function ShaderAnimation({ params }: ShaderAnimationProps) {
     uniforms: null,
     animationId: null,
     speed: defaultParams.speed,
+    geometry: null,
+    material: null,
   })
 
   useEffect(() => {
     const script = document.createElement("script")
     script.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/89/three.min.js"
     script.onload = () => {
-      if (containerRef.current && window.THREE) initThreeJS()
+      if (containerRef.current && window.THREE && !sceneRef.current.renderer) initThreeJS()
     }
     document.head.appendChild(script)
 
     return () => {
       if (sceneRef.current.animationId) cancelAnimationFrame(sceneRef.current.animationId)
+      if (sceneRef.current.geometry) sceneRef.current.geometry.dispose()
+      if (sceneRef.current.material) sceneRef.current.material.dispose()
       if (sceneRef.current.renderer) sceneRef.current.renderer.dispose()
+      if (onResizeRef.current) window.removeEventListener("resize", onResizeRef.current)
       if (document.head.contains(script)) document.head.removeChild(script)
     }
   }, [])
@@ -87,7 +95,7 @@ export function ShaderAnimation({ params }: ShaderAnimationProps) {
       uLineWidth: { type: "f",  value: params.lineWidth },
       uMosaic:    { type: "f",  value: params.mosaic },
       uLines:     { type: "f",  value: params.lines },
-      uHue:       { type: "f",  value: 0.0 },
+      uHue:       { type: "f",  value: (params.hue * Math.PI) / 180 },
     }
 
     const vertexShader = `
@@ -150,13 +158,14 @@ export function ShaderAnimation({ params }: ShaderAnimationProps) {
     renderer.setPixelRatio(window.devicePixelRatio)
     container.appendChild(renderer.domElement)
 
-    sceneRef.current = { camera, scene, renderer, uniforms, animationId: null, speed: params.speed }
+    sceneRef.current = { camera, scene, renderer, uniforms, animationId: null, speed: params.speed, geometry, material }
 
     const onResize = () => {
       renderer.setSize(window.innerWidth, window.innerHeight)
       uniforms.uResolution.value.x = renderer.domElement.width
       uniforms.uResolution.value.y = renderer.domElement.height
     }
+    onResizeRef.current = onResize
     onResize()
     window.addEventListener("resize", onResize, false)
 
