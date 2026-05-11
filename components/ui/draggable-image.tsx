@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, useState } from "react"
 
 interface DraggableImageProps {
   url: string
@@ -16,6 +16,15 @@ export function DraggableImage({ url, onRemove: _onRemove }: DraggableImageProps
   const handleRef    = useRef<HTMLDivElement>(null)
   const transform    = useRef({ x: 0, y: 0, scale: 1 })
   const dragState    = useRef<DragState | null>(null)
+  const [handleVisible, setHandleVisible] = useState(false)
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if (e.key === "e" || e.key === "E") setHandleVisible(v => !v)
+    }
+    window.addEventListener("keydown", onKey)
+    return () => window.removeEventListener("keydown", onKey)
+  }, [])
 
   function applyTransform() {
     if (!containerRef.current) return
@@ -116,7 +125,7 @@ export function DraggableImage({ url, onRemove: _onRemove }: DraggableImageProps
       />
       <div
         ref={handleRef}
-        className="absolute bottom-0 right-0 w-3.5 h-3.5 bg-white/80 rounded-tl cursor-nwse-resize touch-none"
+        className={`absolute bottom-0 right-0 w-3.5 h-3.5 bg-white/80 rounded-tl cursor-nwse-resize touch-none transition-opacity duration-150 ${handleVisible ? "opacity-100" : "opacity-0 pointer-events-none"}`}
         style={{ zIndex: 11 }}
       />
     </div>
