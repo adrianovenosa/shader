@@ -1,0 +1,82 @@
+<h2>Como redimensionar a imagem?</h2>
+<p class="subtitle">O usuário já pode arrastar — qual é a melhor forma de controlar o tamanho?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="corners" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0a0a0a;border-radius:6px;height:160px;position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,#0d1b4b,#1a0a2e)">
+        <div style="position:absolute;top:50%;left:10%;width:80%;height:1px;background:rgba(80,180,255,0.4);box-shadow:0 0 10px rgba(80,180,255,0.6)"></div>
+      </div>
+      <!-- Image with corner handles -->
+      <div style="position:absolute;top:20%;left:20%;width:60%;height:60%;border:1px dashed rgba(255,255,255,0.35)">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+          <div style="width:32px;height:32px;border-radius:4px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2)"></div>
+        </div>
+        <!-- Corner handles -->
+        <div style="position:absolute;top:-4px;left:-4px;width:8px;height:8px;background:#3b82f6;border-radius:2px"></div>
+        <div style="position:absolute;top:-4px;right:-4px;width:8px;height:8px;background:#3b82f6;border-radius:2px"></div>
+        <div style="position:absolute;bottom:-4px;left:-4px;width:8px;height:8px;background:#3b82f6;border-radius:2px"></div>
+        <div style="position:absolute;bottom:-4px;right:-4px;width:8px;height:8px;background:#3b82f6;border-radius:2px;cursor:nwse-resize"></div>
+        <!-- Resize arrow indicator -->
+        <div style="position:absolute;bottom:-18px;right:-18px;font-size:10px;color:rgba(255,255,255,0.4)">↗</div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Alças nos cantos <span style="background:#1e3a5f;color:#93c5fd;font-size:10px;padding:2px 7px;border-radius:10px;margin-left:4px">Recomendado</span></h3>
+      <p>Arrastar qualquer canto redimensiona mantendo a proporção. Arrastar o centro da imagem move. Simples e familiar.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="slider" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0a0a0a;border-radius:6px;height:160px;position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,#0d1b4b,#1a0a2e)">
+        <div style="position:absolute;top:50%;left:10%;width:80%;height:1px;background:rgba(80,180,255,0.4);box-shadow:0 0 10px rgba(80,180,255,0.6)"></div>
+      </div>
+      <!-- Image centered -->
+      <div style="position:absolute;top:25%;left:30%;width:40%;height:40%;border:1px dashed rgba(255,255,255,0.3);display:flex;align-items:center;justify-content:center">
+        <div style="width:24px;height:24px;border-radius:4px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2)"></div>
+      </div>
+      <!-- Slider at bottom -->
+      <div style="position:absolute;bottom:12px;left:12px;right:12px">
+        <div style="font-size:9px;color:rgba(255,255,255,0.35);margin-bottom:4px">Tamanho</div>
+        <div style="height:3px;background:rgba(255,255,255,0.1);border-radius:2px;position:relative">
+          <div style="width:45%;height:100%;background:#3b82f6;border-radius:2px"></div>
+          <div style="position:absolute;top:50%;left:45%;transform:translate(-50%,-50%);width:10px;height:10px;background:#fff;border-radius:50%;border:2px solid #3b82f6"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Slider de escala no painel</h3>
+      <p>Um slider de "Tamanho" no painel de controles aumenta/diminui a imagem. Arrastar ainda move. Menos direto, mas consistente com os outros controles.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="both" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0a0a0a;border-radius:6px;height:160px;position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,#0d1b4b,#1a0a2e)">
+        <div style="position:absolute;top:50%;left:10%;width:80%;height:1px;background:rgba(80,180,255,0.4);box-shadow:0 0 10px rgba(80,180,255,0.6)"></div>
+      </div>
+      <!-- Image with corner handle -->
+      <div style="position:absolute;top:20%;left:20%;width:60%;height:55%;border:1px dashed rgba(255,255,255,0.35)">
+        <div style="position:absolute;inset:0;display:flex;align-items:center;justify-content:center">
+          <div style="width:28px;height:28px;border-radius:4px;background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.2)"></div>
+        </div>
+        <div style="position:absolute;bottom:-4px;right:-4px;width:8px;height:8px;background:#3b82f6;border-radius:2px"></div>
+      </div>
+      <!-- Mini slider -->
+      <div style="position:absolute;bottom:8px;left:12px;right:12px;display:flex;align-items:center;gap:6px">
+        <div style="font-size:8px;color:rgba(255,255,255,0.3)">⊡</div>
+        <div style="flex:1;height:2px;background:rgba(255,255,255,0.08);border-radius:2px;position:relative">
+          <div style="width:55%;height:100%;background:rgba(59,130,246,0.5);border-radius:2px"></div>
+          <div style="position:absolute;top:50%;left:55%;transform:translate(-50%,-50%);width:7px;height:7px;background:#fff;border-radius:50%;border:1.5px solid #3b82f6"></div>
+        </div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Alça + slider</h3>
+      <p>Canto inferior-direito para arrastar-redimensionar E slider no painel para ajuste fino. O mais flexível, mas também mais complexo.</p>
+    </div>
+  </div>
+
+</div>
