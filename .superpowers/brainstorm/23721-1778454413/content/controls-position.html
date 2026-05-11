@@ -1,0 +1,62 @@
+<h2>Onde ficam os controles?</h2>
+<p class="subtitle">O shader ocupa a tela toda — escolha como os controles aparecem</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="sidebar" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#111;border-radius:6px;overflow:hidden;height:160px;display:flex;gap:0">
+      <div style="flex:1;background:linear-gradient(135deg,#1a0a2e,#0d1b4b,#0a2e1a);display:flex;align-items:center;justify-content:center">
+        <div style="width:60%;height:2px;background:rgba(100,200,255,0.6);box-shadow:0 0 12px rgba(100,200,255,0.8)"></div>
+      </div>
+      <div style="width:180px;background:#1a1a1a;padding:10px;display:flex;flex-direction:column;gap:8px">
+        <div style="height:10px;background:#333;border-radius:3px"></div>
+        <div style="height:6px;background:#444;border-radius:3px;width:80%"></div>
+        <div style="height:6px;background:#444;border-radius:3px;width:60%"></div>
+        <div style="height:10px;background:#333;border-radius:3px;margin-top:4px"></div>
+        <div style="height:6px;background:#444;border-radius:3px;width:70%"></div>
+        <div style="height:6px;background:#444;border-radius:3px;width:50%"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Painel lateral fixo</h3>
+      <p>Sidebar à direita sempre visível. Shader ocupa o restante da largura.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="overlay" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#111;border-radius:6px;overflow:hidden;height:160px;position:relative">
+      <div style="width:100%;height:100%;background:linear-gradient(135deg,#1a0a2e,#0d1b4b,#0a2e1a);display:flex;align-items:center;justify-content:center">
+        <div style="width:50%;height:2px;background:rgba(100,200,255,0.6);box-shadow:0 0 12px rgba(100,200,255,0.8)"></div>
+      </div>
+      <div style="position:absolute;bottom:12px;right:12px;background:rgba(20,20,20,0.85);backdrop-filter:blur(8px);border-radius:8px;padding:8px 12px;display:flex;flex-direction:column;gap:5px;min-width:120px">
+        <div style="height:6px;background:#555;border-radius:3px"></div>
+        <div style="height:6px;background:#555;border-radius:3px;width:70%"></div>
+        <div style="height:6px;background:#555;border-radius:3px;width:85%"></div>
+      </div>
+      <div style="position:absolute;top:10px;right:10px;background:rgba(20,20,20,0.6);border-radius:50%;width:28px;height:28px;display:flex;align-items:center;justify-content:center;font-size:14px;color:#aaa">⚙</div>
+    </div>
+    <div class="card-body">
+      <h3>Overlay flutuante</h3>
+      <p>Shader fullscreen. Ícone de engrenagem abre/fecha painel translúcido sobreposto.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="bottom" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#111;border-radius:6px;overflow:hidden;height:160px;display:flex;flex-direction:column;gap:0">
+      <div style="flex:1;background:linear-gradient(135deg,#1a0a2e,#0d1b4b,#0a2e1a);display:flex;align-items:center;justify-content:center">
+        <div style="width:50%;height:2px;background:rgba(100,200,255,0.6);box-shadow:0 0 12px rgba(100,200,255,0.8)"></div>
+      </div>
+      <div style="height:48px;background:#1a1a1a;display:flex;align-items:center;gap:12px;padding:0 16px">
+        <div style="height:8px;width:60px;background:#444;border-radius:3px"></div>
+        <div style="height:8px;width:60px;background:#444;border-radius:3px"></div>
+        <div style="height:8px;width:60px;background:#444;border-radius:3px"></div>
+        <div style="height:8px;width:60px;background:#444;border-radius:3px"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Barra inferior</h3>
+      <p>Controles em barra horizontal fixa embaixo. Shader ocupa toda a altura acima.</p>
+    </div>
+  </div>
+
+</div>

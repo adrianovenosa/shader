@@ -1,0 +1,72 @@
+<h2>Como selecionar o shader?</h2>
+<p class="subtitle">O painel ⚙ já existe — como encaixar o seletor de shader nele?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="tabs" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#111;border-radius:6px;height:170px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:12px;gap:8px">
+      <!-- Mini panel mockup -->
+      <div style="width:180px;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:8px">
+        <!-- Tabs row -->
+        <div style="display:flex;gap:4px;background:#111;border-radius:6px;padding:3px">
+          <div style="flex:1;background:#3b82f6;border-radius:4px;text-align:center;font-size:9px;color:#fff;padding:3px 0">Lines</div>
+          <div style="flex:1;text-align:center;font-size:9px;color:#666;padding:3px 0">Waves</div>
+          <div style="flex:1;text-align:center;font-size:9px;color:#666;padding:3px 0">Perlin</div>
+          <div style="flex:1;text-align:center;font-size:9px;color:#666;padding:3px 0">Fractal</div>
+        </div>
+        <!-- Sliders -->
+        <div style="height:6px;background:#333;border-radius:3px;width:100%"></div>
+        <div style="height:6px;background:#333;border-radius:3px;width:80%"></div>
+        <div style="height:6px;background:#333;border-radius:3px;width:90%"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Abas no topo do painel</h3>
+      <p>Linha de tabs com o nome de cada shader. Clica e troca. Os sliders abaixo são sempre os mesmos 5 controles.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="dropdown" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#111;border-radius:6px;height:170px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:12px;gap:8px">
+      <div style="width:180px;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:8px">
+        <!-- Dropdown -->
+        <div style="background:#222;border:1px solid rgba(255,255,255,0.15);border-radius:6px;padding:5px 8px;font-size:10px;color:#ccc;display:flex;justify-content:space-between;align-items:center">
+          <span>Shader Lines</span>
+          <span style="color:#666">▾</span>
+        </div>
+        <div style="height:6px;background:#333;border-radius:3px;width:100%"></div>
+        <div style="height:6px;background:#333;border-radius:3px;width:80%"></div>
+        <div style="height:6px;background:#333;border-radius:3px;width:90%"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Dropdown no topo do painel</h3>
+      <p>Select nativo estilizado. Compacto, fácil de expandir para muitos shaders no futuro.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="thumbnails" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#111;border-radius:6px;height:170px;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:12px;gap:8px">
+      <div style="width:180px;background:#1a1a1a;border:1px solid rgba(255,255,255,0.1);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:8px">
+        <!-- Thumbnail grid -->
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:4px">
+          <div style="aspect-ratio:1;border-radius:4px;background:linear-gradient(135deg,#0d1b4b,#1a0a2e);border:2px solid #3b82f6;display:flex;align-items:center;justify-content:center">
+            <div style="width:80%;height:1px;background:rgba(100,180,255,0.8);box-shadow:0 0 4px rgba(100,180,255,0.8)"></div>
+          </div>
+          <div style="aspect-ratio:1;border-radius:4px;background:linear-gradient(135deg,#0a2e1a,#1a2e0a);display:flex;align-items:center;justify-content:center">
+            <div style="width:80%;height:6px;border-radius:3px;background:rgba(60,220,100,0.3);box-shadow:0 0 4px rgba(60,220,100,0.5)"></div>
+          </div>
+          <div style="aspect-ratio:1;border-radius:4px;background:linear-gradient(135deg,#2e0a1a,#0a1a2e)"></div>
+          <div style="aspect-ratio:1;border-radius:4px;background:linear-gradient(135deg,#2e1a0a,#1a0a2e)"></div>
+        </div>
+        <div style="height:6px;background:#333;border-radius:3px;width:100%"></div>
+        <div style="height:6px;background:#333;border-radius:3px;width:80%"></div>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Grid de miniaturas</h3>
+      <p>Cada shader tem um preview visual em miniatura. Mais rico visualmente, painel fica um pouco maior.</p>
+    </div>
+  </div>
+
+</div>

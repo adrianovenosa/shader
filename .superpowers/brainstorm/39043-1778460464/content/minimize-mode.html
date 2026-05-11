@@ -1,0 +1,60 @@
+<h2>Como o painel se minimiza em fullscreen?</h2>
+<p class="subtitle">Qual comportamento faz mais sentido quando o shader está em foco total?</p>
+
+<div class="cards">
+
+  <div class="card" data-choice="autohide" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0a0a0a;border-radius:6px;height:160px;position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,#0d1b4b,#1a0a2e)">
+        <div style="position:absolute;top:50%;left:10%;width:80%;height:1px;background:rgba(80,180,255,0.6);box-shadow:0 0 10px rgba(80,180,255,0.8)"></div>
+      </div>
+      <!-- Faded gear -->
+      <div style="position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:rgba(20,20,20,0.3);border:1px solid rgba(255,255,255,0.06);display:flex;align-items:center;justify-content:center;font-size:13px;color:rgba(255,255,255,0.2)">⚙</div>
+      <!-- "mouse move" indicator -->
+      <div style="position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-size:9px;color:rgba(255,255,255,0.3);white-space:nowrap">← sem movimento → controls somem</div>
+    </div>
+    <div class="card-body">
+      <h3>Auto-hide por inatividade</h3>
+      <p>Controls somem após 3s sem mover o mouse. Reaparecem ao mover ou teclar. Comportamento padrão de players de vídeo.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="minimize-btn" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0a0a0a;border-radius:6px;height:160px;position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,#0d1b4b,#1a0a2e)">
+        <div style="position:absolute;top:50%;left:10%;width:80%;height:1px;background:rgba(80,180,255,0.6);box-shadow:0 0 10px rgba(80,180,255,0.8)"></div>
+      </div>
+      <!-- Mini pill -->
+      <div style="position:absolute;top:10px;right:10px;background:rgba(20,20,20,0.8);border:1px solid rgba(255,255,255,0.12);border-radius:20px;padding:4px 10px;display:flex;align-items:center;gap:6px;backdrop-filter:blur(8px)">
+        <span style="font-size:11px;color:rgba(255,255,255,0.6)">⚙</span>
+        <span style="font-size:9px;color:rgba(255,255,255,0.4)">Lines</span>
+        <span style="font-size:10px;color:rgba(255,255,255,0.3)">−</span>
+      </div>
+      <!-- Full panel (minimized state shown as ghost) -->
+      <div style="position:absolute;top:34px;right:10px;width:80px;height:60px;background:rgba(20,20,20,0.15);border:1px dashed rgba(255,255,255,0.08);border-radius:8px;display:flex;align-items:center;justify-content:center">
+        <span style="font-size:8px;color:rgba(255,255,255,0.15)">painel recolhido</span>
+      </div>
+    </div>
+    <div class="card-body">
+      <h3>Pill minimizável <span style="background:#166534;color:#bbf7d0;font-size:10px;padding:2px 7px;border-radius:10px;margin-left:4px">Recomendado</span></h3>
+      <p>Botão − no painel colapsa tudo numa pill compacta (⚙ + nome do shader atual). Clicar expande de volta. Sempre visível, nunca intrusivo.</p>
+    </div>
+  </div>
+
+  <div class="card" data-choice="hotkey" onclick="toggleSelect(this)">
+    <div class="card-image" style="background:#0a0a0a;border-radius:6px;height:160px;position:relative;overflow:hidden">
+      <div style="position:absolute;inset:0;background:linear-gradient(135deg,#0d1b4b,#1a0a2e)">
+        <div style="position:absolute;top:50%;left:10%;width:80%;height:1px;background:rgba(80,180,255,0.6);box-shadow:0 0 10px rgba(80,180,255,0.8)"></div>
+      </div>
+      <!-- Tiny gear only -->
+      <div style="position:absolute;top:10px;right:10px;width:28px;height:28px;border-radius:50%;background:rgba(20,20,20,0.75);border:1px solid rgba(255,255,255,0.12);display:flex;align-items:center;justify-content:center;font-size:13px;color:rgba(255,255,255,0.5)">⚙</div>
+      <!-- Key hint -->
+      <div style="position:absolute;bottom:10px;right:10px;background:rgba(30,30,30,0.7);border:1px solid rgba(255,255,255,0.1);border-radius:4px;padding:3px 7px;font-size:9px;color:rgba(255,255,255,0.4);font-family:monospace">H</div>
+    </div>
+    <div class="card-body">
+      <h3>Tecla de atalho (H)</h3>
+      <p>Pressionar H mostra/oculta o painel inteiro. Gear sempre visível. Ideal para quem quer o visual limpo na hora da captura.</p>
+    </div>
+  </div>
+
+</div>

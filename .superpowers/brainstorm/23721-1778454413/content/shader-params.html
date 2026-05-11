@@ -1,0 +1,54 @@
+<h2>Quais parâmetros controlar?</h2>
+<p class="subtitle">Selecione todos que quiser incluir no painel (multi-select)</p>
+
+<div class="options" data-multiselect>
+
+  <div class="option" data-choice="speed" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Velocidade da animação</h3>
+      <p>Quão rápido as linhas se movem. Atualmente fixo em 0.05/frame.</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="linewidth" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Espessura das linhas</h3>
+      <p>Grossura do brilho de cada linha. Atualmente fixo em 0.0008.</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="mosaic" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Pixelação (mosaic scale)</h3>
+      <p>Tamanho da grade de pixels — valores maiores deixam mais "granulado".</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="lines" onclick="toggleSelect(this)">
+    <div class="letter">D</div>
+    <div class="content">
+      <h3>Número de linhas</h3>
+      <p>Quantidade de linhas sobrepostas no efeito (1 a 8). Mais = mais denso.</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="color" onclick="toggleSelect(this)">
+    <div class="letter">E</div>
+    <div class="content">
+      <h3>Rotação de cor (hue shift)</h3>
+      <p>Muda a paleta — padrão é azul-verde, mas pode rotacionar para roxo, laranja etc.</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="pause" onclick="toggleSelect(this)">
+    <div class="letter">F</div>
+    <div class="content">
+      <h3>Pausar / retomar</h3>
+      <p>Botão toggle para congelar a animação no frame atual.</p>
+    </div>
+  </div>
+
+</div>

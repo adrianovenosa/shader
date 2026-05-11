@@ -1,0 +1,18 @@
+{"type":"server-started","port":58987,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:58987","screen_dir":"/Users/adrianovenosa/Code/Shader/.superpowers/brainstorm/23721-1778454413/content","state_dir":"/Users/adrianovenosa/Code/Shader/.superpowers/brainstorm/23721-1778454413/state"}
+{"type":"screen-added","file":"/Users/adrianovenosa/Code/Shader/.superpowers/brainstorm/23721-1778454413/content/controls-position.html"}
+{"source":"user-event","type":"click","text":"⚙\n    \n    \n      Overlay flutuante\n      Shader fullscreen. Ícone de engrenagem abre/fecha painel translúcido sobreposto.","choice":"overlay","id":null,"timestamp":1778454457916}
+{"source":"user-event","type":"click","text":"⚙\n    \n    \n      Overlay flutuante\n      Shader fullscreen. Ícone de engrenagem abre/fecha painel translúcido sobreposto.","choice":"overlay","id":null,"timestamp":1778454478133}
+{"type":"screen-added","file":"/Users/adrianovenosa/Code/Shader/.superpowers/brainstorm/23721-1778454413/content/shader-params.html"}
+{"source":"user-event","type":"click","text":"A\n    \n      Velocidade da animação\n      Quão rápido as linhas se movem. Atualmente fixo em 0.05/frame.","choice":"speed","id":null,"timestamp":1778454517486}
+{"source":"user-event","type":"click","text":"B\n    \n      Espessura das linhas\n      Grossura do brilho de cada linha. Atualmente fixo em 0.0008.","choice":"linewidth","id":null,"timestamp":1778454518086}
+{"source":"user-event","type":"click","text":"C\n    \n      Pixelação (mosaic scale)\n      Tamanho da grade de pixels — valores maiores deixam mais \"granulado\".","choice":"mosaic","id":null,"timestamp":1778454520053}
+{"source":"user-event","type":"click","text":"D\n    \n      Número de linhas\n      Quantidade de linhas sobrepostas no efeito (1 a 8). Mais = mais denso.","choice":"lines","id":null,"timestamp":1778454523856}
+{"source":"user-event","type":"click","text":"E\n    \n      Rotação de cor (hue shift)\n      Muda a paleta — padrão é azul-verde, mas pode rotacionar para roxo, laranja etc.","choice":"color","id":null,"timestamp":1778454525410}
+{"type":"screen-added","file":"/Users/adrianovenosa/Code/Shader/.superpowers/brainstorm/23721-1778454413/content/image-mode.html"}
+{"source":"user-event","type":"click","text":"LOGO\n      \n    \n    \n      PNG sobreposto simples\n      Imagem flutua sobre o shader sem interação. Transparência do PNG é respeitada — fundo do logo aparece.","choice":"overlay","id":null,"timestamp":1778454621564}
+{"source":"user-event","type":"click","text":"LOGO\n      \n    \n    \n      PNG sobreposto simples\n      Imagem flutua sobre o shader sem interação. Transparência do PNG é respeitada — fundo do logo aparece.","choice":"overlay","id":null,"timestamp":1778454623789}
+{"source":"user-event","type":"click","text":"LOGO\n      \n    \n    \n      PNG sobreposto simples\n      Imagem flutua sobre o shader sem interação. Transparência do PNG é respeitada — fundo do logo aparece.","choice":"overlay","id":null,"timestamp":1778454623999}
+{"source":"user-event","type":"click","text":"LOGO\n      \n    \n    \n      PNG sobreposto simples\n      Imagem flutua sobre o shader sem interação. Transparência do PNG é respeitada — fundo do logo aparece.","choice":"overlay","id":null,"timestamp":1778454625831}
+{"type":"screen-added","file":"/Users/adrianovenosa/Code/Shader/.superpowers/brainstorm/23721-1778454413/content/waiting-1.html"}
+{"type":"screen-added","file":"/Users/adrianovenosa/Code/Shader/.superpowers/brainstorm/23721-1778454413/content/ui-design.html"}
+{"type":"server-stopped","reason":"idle timeout"}

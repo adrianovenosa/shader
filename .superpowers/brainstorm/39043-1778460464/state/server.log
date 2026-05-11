@@ -1,0 +1,16 @@
+{"type":"server-started","port":58805,"host":"127.0.0.1","url_host":"localhost","url":"http://localhost:58805","screen_dir":"/Users/adrianovenosa/Code/Shader/.superpowers/brainstorm/39043-1778460464/content","state_dir":"/Users/adrianovenosa/Code/Shader/.superpowers/brainstorm/39043-1778460464/state"}
+{"type":"screen-added","file":"/Users/adrianovenosa/Code/Shader/.superpowers/brainstorm/39043-1778460464/content/shader-selector.html"}
+{"source":"user-event","type":"click","text":"Grid de miniaturas\n      Cada shader tem um preview visual em miniatura. Mais rico visualmente, painel fica um pouco maior.","choice":"thumbnails","id":null,"timestamp":1778460541759}
+{"source":"user-event","type":"click","text":"Grid de miniaturas\n      Cada shader tem um preview visual em miniatura. Mais rico visualmente, painel fica um pouco maior.","choice":"thumbnails","id":null,"timestamp":1778460542674}
+{"source":"user-event","type":"click","text":"Grid de miniaturas\n      Cada shader tem um preview visual em miniatura. Mais rico visualmente, painel fica um pouco maior.","choice":"thumbnails","id":null,"timestamp":1778460542900}
+{"source":"user-event","type":"click","text":"Grid de miniaturas\n      Cada shader tem um preview visual em miniatura. Mais rico visualmente, painel fica um pouco maior.","choice":"thumbnails","id":null,"timestamp":1778460544383}
+{"type":"screen-added","file":"/Users/adrianovenosa/Code/Shader/.superpowers/brainstorm/39043-1778460464/content/thumbnail-type.html"}
+{"source":"user-event","type":"click","text":"A\n    \n      Arte estática em CSS/SVG Recomendado\n      Cada miniatura é uma representação visual aproximada feita com CSS gradients e animações leves. Zero WebGL extra. O nome do shader aparece embaixo. Leve, instantâneo.","choice":"static","id":null,"timestamp":1778460632897}
+{"source":"user-event","type":"click","text":"A\n    \n      Arte estática em CSS/SVG Recomendado\n      Cada miniatura é uma representação visual aproximada feita com CSS gradients e animações leves. Zero WebGL extra. O nome do shader aparece embaixo. Leve, instantâneo.","choice":"static","id":null,"timestamp":1778460636714}
+{"type":"screen-added","file":"/Users/adrianovenosa/Code/Shader/.superpowers/brainstorm/39043-1778460464/content/waiting-2.html"}
+{"type":"screen-added","file":"/Users/adrianovenosa/Code/Shader/.superpowers/brainstorm/39043-1778460464/content/panel-design.html"}
+{"type":"screen-added","file":"/Users/adrianovenosa/Code/Shader/.superpowers/brainstorm/39043-1778460464/content/minimize-mode.html"}
+{"source":"user-event","type":"click","text":"⚙\n      \n      H\n    \n    \n      Tecla de atalho (H)\n      Pressionar H mostra/oculta o painel inteiro. Gear sempre visível. Ideal para quem quer o visual limpo na hora da captura.","choice":"hotkey","id":null,"timestamp":1778461039909}
+{"source":"user-event","type":"click","text":"⚙\n      \n      H\n    \n    \n      Tecla de atalho (H)\n      Pressionar H mostra/oculta o painel inteiro. Gear sempre visível. Ideal para quem quer o visual limpo na hora da captura.","choice":"hotkey","id":null,"timestamp":1778461043475}
+{"type":"screen-added","file":"/Users/adrianovenosa/Code/Shader/.superpowers/brainstorm/39043-1778460464/content/waiting-3.html"}
+{"type":"server-stopped","reason":"idle timeout"}

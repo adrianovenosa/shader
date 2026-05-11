@@ -1,0 +1,30 @@
+<h2>Como as miniaturas funcionam?</h2>
+<p class="subtitle">Impacto direto na performance e complexidade de implementação</p>
+
+<div class="options">
+
+  <div class="option" data-choice="static" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Arte estática em CSS/SVG <span style="background:#166534;color:#bbf7d0;font-size:10px;padding:2px 7px;border-radius:10px;margin-left:6px">Recomendado</span></h3>
+      <p>Cada miniatura é uma representação visual aproximada feita com CSS gradients e animações leves. Zero WebGL extra. O nome do shader aparece embaixo. Leve, instantâneo.</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="canvas" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Canvas WebGL ao vivo</h3>
+      <p>Cada miniatura roda o shader real numa canvas pequena. Visual fiel ao shader. Pesado: 4 contextos WebGL simultâneos, pode travar em hardware mais fraco.</p>
+    </div>
+  </div>
+
+  <div class="option" data-choice="snapshot" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Snapshot PNG gerado em build-time</h3>
+      <p>Shaders são renderizados offline (ex: no servidor) e salvos como PNGs estáticos em <code>/public</code>. Leve no browser, mas precisa de pipeline de geração extra.</p>
+    </div>
+  </div>
+
+</div>

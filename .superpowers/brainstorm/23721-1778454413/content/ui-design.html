@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Design — Shader Controls UI</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: #0a0a0a; font-family: -apple-system, BlinkMacSystemFont, 'Inter', sans-serif; color: #e5e5e5; min-height: 100vh; }
+
+  .page { display: flex; flex-direction: column; gap: 32px; padding: 32px; max-width: 960px; margin: 0 auto; }
+  h2 { font-size: 18px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+  p.sub { font-size: 13px; color: #888; margin-bottom: 24px; }
+
+  /* ── Fullscreen mockup ── */
+  .screen {
+    width: 100%;
+    aspect-ratio: 16/9;
+    background: linear-gradient(135deg, #0d1b4b 0%, #1a0a2e 40%, #0a2e1a 100%);
+    border-radius: 12px;
+    position: relative;
+    overflow: hidden;
+    border: 1px solid #222;
+  }
+  .shader-lines {
+    position: absolute; inset: 0;
+  }
+  .shader-lines::before, .shader-lines::after {
+    content: '';
+    position: absolute;
+    left: 5%; width: 90%; height: 1px;
+    border-radius: 1px;
+  }
+  .shader-lines::before {
+    top: 47%;
+    background: rgba(80,180,255,0.6);
+    box-shadow: 0 0 12px rgba(80,180,255,0.9), 0 0 30px rgba(80,180,255,0.4);
+  }
+  .shader-lines::after {
+    top: 53%;
+    background: rgba(60,220,180,0.4);
+    box-shadow: 0 0 8px rgba(60,220,180,0.7);
+  }
+  .extra-line {
+    position: absolute; left: 15%; width: 70%; height: 1px;
+    top: 50%; background: rgba(160,100,255,0.3);
+    box-shadow: 0 0 10px rgba(160,100,255,0.5);
+  }
+
+  /* PNG overlay */
+  .png-overlay {
+    position: absolute;
+    top: 50%; left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(255,255,255,0.95);
+    border-radius: 10px;
+    width: 22%;
+    aspect-ratio: 3/2;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 700; color: #111; letter-spacing: 0.5px;
+  }
+
+  /* Gear button */
+  .gear-btn {
+    position: absolute; top: 16px; right: 16px;
+    width: 36px; height: 36px; border-radius: 50%;
+    background: rgba(30,30,30,0.75);
+    border: 1px solid rgba(255,255,255,0.12);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; cursor: pointer;
+    backdrop-filter: blur(6px);
+  }
+
+  /* Upload zone (bottom-right of screen) */
+  .upload-btn {
+    position: absolute; bottom: 14px; right: 14px;
+    background: rgba(30,30,30,0.75);
+    border: 1px dashed rgba(255,255,255,0.2);
+    border-radius: 8px;
+    padding: 6px 12px;
+    font-size: 10px; color: #aaa;
+    backdrop-filter: blur(6px);
+  }
+
+  /* ── Controls panel ── */
+  .panel {
+    position: absolute;
+    top: 58px; right: 14px;
+    width: 220px;
+    background: rgba(18,18,18,0.92);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 12px;
+    padding: 16px;
+    backdrop-filter: blur(12px);
+    display: flex; flex-direction: column; gap: 14px;
+  }
+  .panel-title {
+    font-size: 11px; font-weight: 600; color: #888;
+    text-transform: uppercase; letter-spacing: 0.8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+  }
+  .control-row { display: flex; flex-direction: column; gap: 5px; }
+  .control-label {
+    display: flex; justify-content: space-between;
+    font-size: 11px; color: #ccc;
+  }
+  .control-label span { color: #666; }
+  .slider-track {
+    width: 100%; height: 4px; border-radius: 2px;
+    background: rgba(255,255,255,0.1); position: relative;
+  }
+  .slider-fill {
+    height: 100%; border-radius: 2px;
+    background: linear-gradient(90deg, #3b82f6, #06b6d4);
+  }
+  .slider-thumb {
+    position: absolute; top: 50%; transform: translateY(-50%);
+    width: 12px; height: 12px; border-radius: 50%;
+    background: #fff; border: 2px solid #3b82f6;
+  }
+
+  .divider { height: 1px; background: rgba(255,255,255,0.07); }
+
+  .upload-row {
+    background: rgba(255,255,255,0.04);
+    border: 1px dashed rgba(255,255,255,0.15);
+    border-radius: 6px;
+    padding: 8px;
+    display: flex; flex-direction: column; align-items: center; gap: 4px;
+    cursor: pointer;
+  }
+  .upload-row .icon { font-size: 18px; }
+  .upload-row .label { font-size: 10px; color: #888; }
+  .upload-row .hint { font-size: 9px; color: #555; }
+
+  /* annotations */
+  .annotation {
+    position: absolute;
+    background: #facc15;
+    color: #000;
+    font-size: 10px; font-weight: 700;
+    padding: 2px 7px; border-radius: 10px;
+    white-space: nowrap;
+  }
+  .ann-line {
+    position: absolute;
+    width: 1px; background: rgba(250,204,21,0.5);
+  }
+
+  .legend { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 8px; }
+  .legend-item { display: flex; align-items: center; gap: 6px; font-size: 11px; color: #999; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
+</style>
+</head>
+<body>
+<div class="page">
+  <div>
+    <h2>Design — Shader Lines com Controles</h2>
+    <p class="sub">Mockup do estado com painel aberto. O shader ocupa toda a tela.</p>
+  </div>
+
+  <div class="screen">
+    <div class="shader-lines"></div>
+    <div class="extra-line"></div>
+
+    <!-- PNG overlay centered -->
+    <div class="png-overlay">PNG</div>
+
+    <!-- Gear button -->
+    <div class="gear-btn">⚙</div>
+
+    <!-- Controls panel (open state) -->
+    <div class="panel">
+      <div class="panel-title">Controles</div>
+
+      <div class="control-row">
+        <div class="control-label">Velocidade <span>0.05</span></div>
+        <div class="slider-track">
+          <div class="slider-fill" style="width:35%"></div>
+          <div class="slider-thumb" style="left:calc(35% - 6px)"></div>
+        </div>
+      </div>
+
+      <div class="control-row">
+        <div class="control-label">Espessura <span>0.0008</span></div>
+        <div class="slider-track">
+          <div class="slider-fill" style="width:25%"></div>
+          <div class="slider-thumb" style="left:calc(25% - 6px)"></div>
+        </div>
+      </div>
+
+      <div class="control-row">
+        <div class="control-label">Pixelação <span>4.0</span></div>
+        <div class="slider-track">
+          <div class="slider-fill" style="width:55%"></div>
+          <div class="slider-thumb" style="left:calc(55% - 6px)"></div>
+        </div>
+      </div>
+
+      <div class="control-row">
+        <div class="control-label">Linhas <span>5</span></div>
+        <div class="slider-track">
+          <div class="slider-fill" style="width:50%"></div>
+          <div class="slider-thumb" style="left:calc(50% - 6px)"></div>
+        </div>
+      </div>
+
+      <div class="control-row">
+        <div class="control-label">Cor (hue) <span>0°</span></div>
+        <div class="slider-track" style="background: linear-gradient(90deg, #f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00); opacity:0.5; position:relative">
+          <div class="slider-thumb" style="left:calc(0% + 0px); background:#fff; border-color:#fff; box-shadow:0 0 0 2px rgba(0,0,0,0.5)"></div>
+        </div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="upload-row">
+        <div class="icon">🖼</div>
+        <div class="label">Carregar PNG</div>
+        <div class="hint">Clique ou arraste aqui</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item"><div class="legend-dot" style="background:#3b82f6"></div>Shader fullscreen (100vw × 100vh)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#f5f5f5;border:1px solid #444"></div>PNG centralizado, pointer-events-none</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#333"></div>Painel overlay (⚙ abre/fecha)</div>
+    <div class="legend-item"><div class="legend-dot" style="background:#facc15"></div>Upload de imagem dentro do painel</div>
+  </div>
+
+</div>
+</body>
+</html>
