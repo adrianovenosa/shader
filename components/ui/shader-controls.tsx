@@ -13,6 +13,7 @@ interface ShaderControlsProps {
   onImageUpload: (url: string | null) => void
   shaderId: string
   onShaderChange: (id: string) => void
+  imageUrl: string | null
 }
 
 export function ShaderControls({
@@ -23,6 +24,7 @@ export function ShaderControls({
   onImageUpload,
   shaderId,
   onShaderChange,
+  imageUrl,
 }: ShaderControlsProps) {
   const fileRef      = useRef<HTMLInputElement>(null)
   const prevUrlRef   = useRef<string | null>(null)
@@ -177,6 +179,16 @@ export function ShaderControls({
           <span className="text-lg leading-none">🖼</span>
           <span className="text-[10px]">Carregar PNG</span>
         </button>
+
+        {imageUrl && (
+          <button
+            onClick={() => onImageUpload(null)}
+            className="border border-dashed border-red-500/30 rounded-lg p-2.5 flex flex-col items-center gap-1 text-red-400/60 hover:text-red-400 hover:border-red-500/50 transition-colors cursor-pointer"
+          >
+            <span className="text-lg leading-none">🗑</span>
+            <span className="text-[10px]">Remover imagem</span>
+          </button>
+        )}
       </div>
     </div>
   )
