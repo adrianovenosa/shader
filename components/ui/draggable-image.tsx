@@ -11,7 +11,7 @@ type DragState =
   | { type: "move"; startX: number; startY: number; originX: number; originY: number }
   | { type: "resize"; centerX: number; centerY: number; startDist: number; scaleOrigin: number }
 
-export function DraggableImage({ url }: DraggableImageProps) {
+export function DraggableImage({ url, onRemove: _onRemove }: DraggableImageProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const handleRef    = useRef<HTMLDivElement>(null)
   const transform    = useRef({ x: 0, y: 0, scale: 1 })
