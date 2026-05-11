@@ -46,10 +46,17 @@ export function ShaderControls({
     }
   }, [])
 
-  // ── H key toggles panel ───────────────────────────────────────────────────
+  // ── H key toggles panel, F key toggles fullscreen ─────────────────────────
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "h" || e.key === "H") onToggle()
+      if (e.key === "f" || e.key === "F") {
+        if (document.fullscreenElement) {
+          document.exitFullscreen()
+        } else {
+          document.documentElement.requestFullscreen().catch(() => {})
+        }
+      }
     }
     window.addEventListener("keydown", onKey)
     return () => window.removeEventListener("keydown", onKey)
