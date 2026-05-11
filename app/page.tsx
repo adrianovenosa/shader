@@ -3,6 +3,7 @@
 import { useState } from "react"
 import { ShaderAnimation, defaultParams, type ShaderParams } from "@/components/ui/shader-lines"
 import { ShaderControls } from "@/components/ui/shader-controls"
+import { DraggableImage } from "@/components/ui/draggable-image"
 import { DEFAULT_SHADER_ID } from "@/lib/shaders"
 
 export default function Page() {
@@ -16,11 +17,7 @@ export default function Page() {
       <ShaderAnimation params={params} shaderId={shaderId} />
 
       {imageUrl && (
-        <img
-          src={imageUrl}
-          alt=""
-          className="fixed inset-0 m-auto max-w-[80vw] max-h-[80vh] object-contain pointer-events-none z-10"
-        />
+        <DraggableImage url={imageUrl} onRemove={() => setImageUrl(null)} />
       )}
 
       <ShaderControls
@@ -31,6 +28,7 @@ export default function Page() {
         onImageUpload={setImageUrl}
         shaderId={shaderId}
         onShaderChange={setShaderId}
+        imageUrl={imageUrl}
       />
     </main>
   )
