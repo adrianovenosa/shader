@@ -1,17 +1,15 @@
 "use client"
 
 import { useEffect, useRef } from "react"
-
-declare global {
-  interface Window { THREE: any }
-}
+import * as THREE from "three"
+import { SHADERS, DEFAULT_SHADER_ID } from "@/lib/shaders"
 
 export interface ShaderParams {
-  speed: number      // time increment per frame  [0.005 – 0.2]
-  lineWidth: number  // glow width uniform        [0.0001 – 0.003]
-  mosaic: number     // pixelation grid scale     [1.0 – 16.0]
-  lines: number      // number of line layers     [1 – 8]
-  hue: number        // hue rotation in degrees   [0 – 360]
+  speed: number
+  lineWidth: number
+  mosaic: number
+  lines: number
+  hue: number
 }
 
 export const defaultParams: ShaderParams = {
@@ -24,141 +22,72 @@ export const defaultParams: ShaderParams = {
 
 interface ShaderAnimationProps {
   params: ShaderParams
+  shaderId: string
 }
 
-export function ShaderAnimation({ params }: ShaderAnimationProps) {
+const VERTEX_SHADER = `
+  void main() {
+    gl_Position = vec4(position, 1.0);
+  }
+`
+
+type Uniforms = {
+  uTime:       { value: number }
+  uResolution: { value: THREE.Vector2 }
+  uLineWidth:  { value: number }
+  uMosaic:     { value: number }
+  uLines:      { value: number }
+  uHue:        { value: number }
+}
+
+type SceneState = {
+  camera:      THREE.Camera | null
+  scene:       THREE.Scene | null
+  renderer:    THREE.WebGLRenderer | null
+  uniforms:    Uniforms | null
+  geometry:    THREE.BufferGeometry | null
+  material:    THREE.ShaderMaterial | null
+  animationId: number | null
+  speed:       number
+}
+
+export function ShaderAnimation({ params, shaderId }: ShaderAnimationProps) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const onResizeRef = useRef<(() => void) | null>(null)
-  const sceneRef = useRef<{
-    camera: any
-    scene: any
-    renderer: any
-    uniforms: any
-    animationId: number | null
-    speed: number
-    geometry: any
-    material: any
-  }>({
-    camera: null,
-    scene: null,
-    renderer: null,
-    uniforms: null,
-    animationId: null,
+  const onResizeRef  = useRef<(() => void) | null>(null)
+  const sceneRef     = useRef<SceneState>({
+    camera: null, scene: null, renderer: null, uniforms: null,
+    geometry: null, material: null, animationId: null,
     speed: defaultParams.speed,
-    geometry: null,
-    material: null,
   })
 
+  // ── Mount: infrastructure (camera, scene, renderer, uniforms, loop) ────────
   useEffect(() => {
-    const script = document.createElement("script")
-    script.src = "https://cdnjs.cloudflare.com/ajax/libs/three.js/89/three.min.js"
-    script.onload = () => {
-      if (containerRef.current && window.THREE && !sceneRef.current.renderer) initThreeJS()
-    }
-    document.head.appendChild(script)
-
-    return () => {
-      if (sceneRef.current.animationId) cancelAnimationFrame(sceneRef.current.animationId)
-      if (sceneRef.current.geometry) sceneRef.current.geometry.dispose()
-      if (sceneRef.current.material) sceneRef.current.material.dispose()
-      if (sceneRef.current.renderer) sceneRef.current.renderer.dispose()
-      if (onResizeRef.current) window.removeEventListener("resize", onResizeRef.current)
-      if (document.head.contains(script)) document.head.removeChild(script)
-    }
-  }, [])
-
-  // Sync params → uniforms without rebuilding the scene
-  useEffect(() => {
-    const { uniforms } = sceneRef.current
-    if (!uniforms) return
-    sceneRef.current.speed = params.speed
-    uniforms.uLineWidth.value = params.lineWidth
-    uniforms.uMosaic.value = params.mosaic
-    uniforms.uLines.value = params.lines
-    uniforms.uHue.value = (params.hue * Math.PI) / 180
-  }, [params])
-
-  const initThreeJS = () => {
-    if (!containerRef.current || !window.THREE) return
-    const THREE = window.THREE
+    if (!containerRef.current || sceneRef.current.renderer) return
     const container = containerRef.current
     container.innerHTML = ""
 
     const camera = new THREE.Camera()
     camera.position.z = 1
     const scene = new THREE.Scene()
-    const geometry = new THREE.PlaneBufferGeometry(2, 2)
 
-    const uniforms = {
-      uTime:      { type: "f",  value: 1.0 },
-      uResolution:{ type: "v2", value: new THREE.Vector2() },
-      uLineWidth: { type: "f",  value: params.lineWidth },
-      uMosaic:    { type: "f",  value: params.mosaic },
-      uLines:     { type: "f",  value: params.lines },
-      uHue:       { type: "f",  value: (params.hue * Math.PI) / 180 },
+    const uniforms: Uniforms = {
+      uTime:       { value: 1.0 },
+      uResolution: { value: new THREE.Vector2() },
+      uLineWidth:  { value: params.lineWidth },
+      uMosaic:     { value: params.mosaic },
+      uLines:      { value: params.lines },
+      uHue:        { value: (params.hue * Math.PI) / 180 },
     }
-
-    const vertexShader = `
-      void main() {
-        gl_Position = vec4(position, 1.0);
-      }
-    `
-
-    const fragmentShader = `
-      precision highp float;
-
-      uniform vec2  uResolution;
-      uniform float uTime;
-      uniform float uLineWidth;
-      uniform float uMosaic;
-      uniform float uLines;
-      uniform float uHue;
-
-      float random(in float x) {
-        return fract(sin(x) * 1e4);
-      }
-
-      // Rodrigues rotation around (1,1,1) axis — equivalent to hue rotation
-      vec3 hueShift(vec3 color, float angle) {
-        const vec3 k = vec3(0.57735);
-        float c = cos(angle);
-        return color * c + cross(k, color) * sin(angle) + k * dot(k, color) * (1.0 - c);
-      }
-
-      void main(void) {
-        vec2 uv = (gl_FragCoord.xy * 2.0 - uResolution.xy) / min(uResolution.x, uResolution.y);
-
-        float gridX = 256.0 / uMosaic;
-        float gridY = 256.0 / (uMosaic * 0.5);
-        uv.x = floor(uv.x * gridX) / gridX;
-        uv.y = floor(uv.y * gridY) / gridY;
-
-        float t = uTime * 0.06 + random(uv.x) * 0.4;
-
-        vec3 color = vec3(0.0);
-        for (int j = 0; j < 3; j++) {
-          for (int i = 0; i < 8; i++) {
-            if (float(i) >= uLines) break;
-            color[j] += uLineWidth * float(i * i)
-              / abs(fract(t - 0.01 * float(j) + float(i) * 0.01) - length(uv));
-          }
-        }
-
-        // Original channel order was BGR; keep it, then apply hue shift
-        vec3 rgb = hueShift(vec3(color[2], color[1], color[0]), uHue);
-        gl_FragColor = vec4(rgb, 1.0);
-      }
-    `
-
-    const material = new THREE.ShaderMaterial({ uniforms, vertexShader, fragmentShader })
-    const mesh = new THREE.Mesh(geometry, material)
-    scene.add(mesh)
 
     const renderer = new THREE.WebGLRenderer()
     renderer.setPixelRatio(window.devicePixelRatio)
     container.appendChild(renderer.domElement)
 
-    sceneRef.current = { camera, scene, renderer, uniforms, animationId: null, speed: params.speed, geometry, material }
+    sceneRef.current = {
+      camera, scene, renderer, uniforms,
+      geometry: null, material: null,
+      animationId: null, speed: params.speed,
+    }
 
     const onResize = () => {
       renderer.setSize(window.innerWidth, window.innerHeight)
@@ -175,7 +104,48 @@ export function ShaderAnimation({ params }: ShaderAnimationProps) {
       renderer.render(scene, camera)
     }
     animate()
-  }
+
+    return () => {
+      if (sceneRef.current.animationId) cancelAnimationFrame(sceneRef.current.animationId)
+      if (onResizeRef.current) window.removeEventListener("resize", onResizeRef.current)
+      sceneRef.current.geometry?.dispose()
+      sceneRef.current.material?.dispose()
+      renderer.dispose()
+    }
+  }, [])
+
+  // ── Shader change: swap material only, keep renderer alive ─────────────────
+  useEffect(() => {
+    const { scene, uniforms } = sceneRef.current
+    if (!scene || !uniforms) return
+
+    const def = SHADERS.find(s => s.id === shaderId) ?? SHADERS[0]
+
+    scene.clear()
+    sceneRef.current.geometry?.dispose()
+    sceneRef.current.material?.dispose()
+
+    const geometry = new THREE.PlaneGeometry(2, 2)
+    const material = new THREE.ShaderMaterial({
+      uniforms,
+      vertexShader: VERTEX_SHADER,
+      fragmentShader: def.fragmentShader,
+    })
+    scene.add(new THREE.Mesh(geometry, material))
+    sceneRef.current.geometry = geometry
+    sceneRef.current.material = material
+  }, [shaderId])
+
+  // ── Params sync: write directly to uniforms, no scene rebuild ──────────────
+  useEffect(() => {
+    const { uniforms } = sceneRef.current
+    if (!uniforms) return
+    sceneRef.current.speed    = params.speed
+    uniforms.uLineWidth.value = params.lineWidth
+    uniforms.uMosaic.value    = params.mosaic
+    uniforms.uLines.value     = params.lines
+    uniforms.uHue.value       = (params.hue * Math.PI) / 180
+  }, [params])
 
   return <div ref={containerRef} className="fixed inset-0 w-full h-full" />
 }
