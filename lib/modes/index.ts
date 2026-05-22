@@ -11,13 +11,14 @@ import { gameOfLifeMode }         from './generative/game-of-life'
 import { lissajousMode }          from './generative/lissajous'
 import { reactionDiffusionMode }  from './generative/reaction-diffusion'
 import { truchetTilesMode }       from './generative/truchet-tiles'
+import { shaderAsTextureMode }    from './generative/shader-as-texture'
 import type { ModeDefinition }    from '@/lib/renderers/adapter'
 
 export const MODES: ModeDefinition[] = [
   linesMode, wavesMode, perlinMode, fractalMode,
   colorInterpolationMode, kaleidoscopeMode, bezierFlowMode, noiseFieldMode,
   smokeParticlesMode, gameOfLifeMode, lissajousMode,
-  reactionDiffusionMode, truchetTilesMode,
+  reactionDiffusionMode, truchetTilesMode, shaderAsTextureMode,
 ]
 
 export const DEFAULT_MODE_ID = 'lines'
