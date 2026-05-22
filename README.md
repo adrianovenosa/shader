@@ -1,36 +1,48 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Shader
 
-## Getting Started
+A generative art app with 14 rendering modes — 4 GLSL shaders and 10 p5.js generative modes — with per-mode parameter controls, named presets, and custom output resolution.
 
-First, run the development server:
+## Modes
+
+**Shaders** (GLSL / Three.js)
+- Lines, Waves, Perlin, Fractal
+
+**Generativo** (p5.js)
+- Color Interpolation, Kaleidoscope, Bezier Flow, Noise Field, Smoke Particles, Game of Life, Lissajous, Reaction Diffusion, Truchet Tiles, Shader 3D
+
+## Controls
+
+| Key | Action |
+|-----|--------|
+| `H` | Toggle controls panel |
+| `F` | Toggle fullscreen |
+
+## Features
+
+- **Per-mode params** — each mode has its own parameter set; values are auto-saved to localStorage and restored when you return to that mode
+- **Named presets** — save, load, and delete named param snapshots per mode
+- **Custom output resolution** — type any W×H or pick a quick preset (Full, 1:1, 16:9, 9:16, 4:3); letterbox rendering when not fullscreen
+- **Image overlay** — load a PNG and drag it anywhere on the canvas
+
+## Stack
+
+- Next.js 16, React 19, TypeScript
+- Three.js (GLSL shaders, Shader 3D mode)
+- p5.js (generative modes)
+- Tailwind CSS v4
+- Vitest
+
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000). Press `H` to open the controls panel.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Tests
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+```bash
+npm test
+```
