@@ -17,11 +17,15 @@ export function createThreeAdapter(fragmentShader: string): RendererAdapter {
   let scene:    THREE.Scene | null = null
   let camera:   THREE.Camera | null = null
   let uniforms: Uniforms | null = null
+  let geo:      THREE.PlaneGeometry | null = null
+  let mat:      THREE.ShaderMaterial | null = null
   let animId:   number | null = null
   let speed = 0.05
 
   return {
     mount(container, params) {
+      if (renderer) return   // idempotency guard
+
       camera = new THREE.Camera()
       camera.position.z = 1
       scene = new THREE.Scene()
@@ -49,8 +53,8 @@ export function createThreeAdapter(fragmentShader: string): RendererAdapter {
       }
       setSize()
 
-      const geo = new THREE.PlaneGeometry(2, 2)
-      const mat = new THREE.ShaderMaterial({ uniforms, vertexShader: VERTEX, fragmentShader })
+      geo = new THREE.PlaneGeometry(2, 2)
+      mat = new THREE.ShaderMaterial({ uniforms, vertexShader: VERTEX, fragmentShader })
       scene.add(new THREE.Mesh(geo, mat))
 
       const tick = () => {
@@ -77,10 +81,13 @@ export function createThreeAdapter(fragmentShader: string): RendererAdapter {
     },
 
     dispose() {
-      if (animId) cancelAnimationFrame(animId)
+      if (animId !== null) cancelAnimationFrame(animId)
+      geo?.dispose()
+      mat?.dispose()
       renderer?.dispose()
       renderer?.domElement.remove()
-      renderer = null; scene = null; camera = null; uniforms = null; animId = null
+      renderer = null; scene = null; camera = null
+      uniforms = null; geo = null; mat = null; animId = null
     },
   }
 }

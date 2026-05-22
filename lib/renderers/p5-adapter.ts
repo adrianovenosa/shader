@@ -10,6 +10,7 @@ export type SketchFactory = (
 export function createP5Adapter(sketchFactory: SketchFactory): RendererAdapter {
   let p5Instance: any = null
   let disposed = false
+  let mountGen = 0
   let currentParams: Record<string, number> = {}
   const size: SizeRef = { w: 0, h: 0 }
 
@@ -17,11 +18,12 @@ export function createP5Adapter(sketchFactory: SketchFactory): RendererAdapter {
     mount(container, params) {
       currentParams = { ...params }
       disposed = false
+      const gen = ++mountGen
       size.w = container.clientWidth  || window.innerWidth
       size.h = container.clientHeight || window.innerHeight
 
       import('p5').then(({ default: P5 }) => {
-        if (disposed) return
+        if (disposed || mountGen !== gen) return
         p5Instance = new (P5 as any)((p: any) => {
           sketchFactory(p, () => currentParams, size)
         }, container)
