@@ -31,7 +31,7 @@ vec3 hueShift(vec3 color, float angle) {
 
 // ─── Lines ────────────────────────────────────────────────────────────────────
 
-const linesFragment = PREAMBLE + `
+export const linesFragment = PREAMBLE + `
 float random(in float x) {
   return fract(sin(x) * 1e4);
 }
@@ -62,7 +62,7 @@ void main(void) {
 
 // ─── Waves ────────────────────────────────────────────────────────────────────
 
-const wavesFragment = PREAMBLE + `
+export const wavesFragment = PREAMBLE + `
 void main(void) {
   vec2 uv = (gl_FragCoord.xy * 2.0 - uResolution.xy) / min(uResolution.x, uResolution.y);
 
@@ -87,7 +87,7 @@ void main(void) {
 
 // ─── Perlin (fBm value noise) ─────────────────────────────────────────────────
 
-const perlinFragment = PREAMBLE + `
+export const perlinFragment = PREAMBLE + `
 float hash(vec2 p) {
   return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453123);
 }
@@ -125,7 +125,7 @@ void main(void) {
 
 // ─── Fractal (animated Julia set) ────────────────────────────────────────────
 
-const fractalFragment = PREAMBLE + `
+export const fractalFragment = PREAMBLE + `
 void main(void) {
   vec2 uv = (gl_FragCoord.xy * 2.0 - uResolution.xy) / min(uResolution.x, uResolution.y);
   uv = uv * (2.5 / uMosaic);
