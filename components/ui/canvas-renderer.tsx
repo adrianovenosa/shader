@@ -1,0 +1,55 @@
+'use client'
+
+import { useEffect, useRef } from 'react'
+import type { RendererAdapter } from '@/lib/renderers/adapter'
+import { MODES } from '@/lib/modes'
+
+interface Props {
+  modeId: string
+  params: Record<string, number>
+}
+
+export function CanvasRenderer({ modeId, params }: Props) {
+  const containerRef = useRef<HTMLDivElement>(null)
+  const adapterRef   = useRef<RendererAdapter | null>(null)
+  const paramsRef    = useRef(params)
+
+  // Keep paramsRef current and push updates to live adapter
+  useEffect(() => {
+    paramsRef.current = params
+    adapterRef.current?.updateParams(params)
+  }, [params])
+
+  // Swap adapter when mode changes
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+
+    adapterRef.current?.dispose()
+    container.innerHTML = ''
+
+    const mode = MODES.find(m => m.id === modeId) ?? MODES[0]
+    const adapter = mode.createAdapter()
+    adapter.mount(container, paramsRef.current)
+    adapterRef.current = adapter
+
+    return () => {
+      adapter.dispose()
+      adapterRef.current = null
+    }
+  }, [modeId])
+
+  // ResizeObserver drives adapter.resize()
+  useEffect(() => {
+    const container = containerRef.current
+    if (!container) return
+    const obs = new ResizeObserver(([entry]) => {
+      const { width, height } = entry.contentRect
+      if (width > 0 && height > 0) adapterRef.current?.resize(width, height)
+    })
+    obs.observe(container)
+    return () => obs.disconnect()
+  }, [])
+
+  return <div ref={containerRef} className="w-full h-full" />
+}
