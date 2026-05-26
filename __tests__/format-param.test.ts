@@ -8,9 +8,9 @@ describe('formatParamValue', () => {
   })
   it('uses 4 decimal places when step < 0.01', () => {
     expect(formatParamValue(0.0008, { step: 0.0001 })).toBe('0.0008')
+    expect(formatParamValue(0.05, { step: 0.005 })).toBe('0.0500')
   })
-  it('uses 3 decimal places for other steps', () => {
-    expect(formatParamValue(0.05, { step: 0.005 })).toBe('0.050')
+  it('uses 3 decimal places when step >= 0.01', () => {
     expect(formatParamValue(4.0, { step: 0.5 })).toBe('4.000')
   })
 })
