@@ -1,9 +1,10 @@
 'use client'
 
-import { useEffect, useRef, useState, type ChangeEvent } from 'react'
+import { useCallback, useEffect, useRef, useState, type ChangeEvent } from 'react'
 import { MODES } from '@/lib/modes'
 import type { Preset } from '@/lib/presets'
 import type { ParamSchema } from '@/lib/renderers/adapter'
+import { formatParamValue } from '@/lib/format-param'
 
 interface Props {
   open: boolean
@@ -46,6 +47,8 @@ export function ShaderControls({
   const [gearVisible, setGearVisible] = useState(true)
   const [savingPreset, setSavingPreset] = useState(false)
   const [presetName, setPresetName]   = useState('')
+  const [editingKey, setEditingKey] = useState<string | null>(null)
+  const [draftValue, setDraftValue] = useState('')
 
   useEffect(() => {
     const show = () => {
@@ -113,6 +116,14 @@ export function ShaderControls({
     const v = parseInt(e.target.value)
     if (v > 0) onOutputChange(outputWidth, v, 'custom')
   }
+
+  const commitEdit = useCallback((schema: ParamSchema) => {
+    const parsed = parseFloat(draftValue)
+    if (!isNaN(parsed)) {
+      onParamChange({ ...params, [schema.key]: parsed })
+    }
+    setEditingKey(null)
+  }, [draftValue, onParamChange, params])
 
   return (
     <div className="fixed top-3 right-3 z-20">
@@ -231,18 +242,38 @@ export function ShaderControls({
                 </div>
               )
               // default: slider
-              const display = schema.step === 1
-                ? String(Math.round(val))
-                : val.toFixed(schema.step && schema.step < 0.01 ? 4 : 3)
+              const display = formatParamValue(val, schema)
+              const clampedVal = Math.min(schema.max ?? Infinity, Math.max(schema.min ?? -Infinity, val))
               return (
                 <div key={schema.key} className="flex flex-col gap-1.5">
-                  <div className="flex justify-between text-[11px]">
+                  <div className="flex justify-between text-[11px] items-center">
                     <span className="text-white/70">{schema.label}</span>
-                    <span className="text-white/30">{display}</span>
+                    {editingKey === schema.key ? (
+                      <input
+                        type="text"
+                        value={draftValue}
+                        autoFocus
+                        onChange={e => setDraftValue(e.target.value)}
+                        onBlur={() => commitEdit(schema)}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter') { commitEdit(schema); e.currentTarget.blur() }
+                          if (e.key === 'Escape') { setEditingKey(null) }
+                        }}
+                        className="w-14 text-right text-[11px] bg-transparent border-b border-white/30 text-white/80 outline-none"
+                      />
+                    ) : (
+                      <button
+                        type="button"
+                        onClick={() => { setEditingKey(schema.key); setDraftValue(display) }}
+                        className="text-white/30 hover:text-white/60 text-[11px] bg-transparent border-none cursor-pointer"
+                      >
+                        {display}
+                      </button>
+                    )}
                   </div>
                   <input
                     type="range" min={schema.min} max={schema.max} step={schema.step}
-                    value={val} onChange={handleSlider(schema)}
+                    value={clampedVal} onChange={handleSlider(schema)}
                     className="w-full h-1 rounded-full cursor-pointer accent-blue-400"
                   />
                 </div>
