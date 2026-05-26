@@ -39,7 +39,7 @@ float random(in float x) {
 
 void main(void) {
   vec2 uv = (gl_FragCoord.xy * 2.0 - uResolution.xy) / min(uResolution.x, uResolution.y);
-  uv.x /= uExpandX;
+  uv.x /= max(uExpandX, 0.001);
 
   float gridX = 256.0 / uMosaic;
   float gridY = 256.0 / (uMosaic * 0.5);
