@@ -21,6 +21,7 @@ uniform float uLineWidth;
 uniform float uMosaic;
 uniform float uLines;
 uniform float uHue;
+uniform float uExpandX;
 
 vec3 hueShift(vec3 color, float angle) {
   const vec3 k = vec3(0.57735);
@@ -38,6 +39,7 @@ float random(in float x) {
 
 void main(void) {
   vec2 uv = (gl_FragCoord.xy * 2.0 - uResolution.xy) / min(uResolution.x, uResolution.y);
+  uv.x /= uExpandX;
 
   float gridX = 256.0 / uMosaic;
   float gridY = 256.0 / (uMosaic * 0.5);
