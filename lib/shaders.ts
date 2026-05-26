@@ -32,12 +32,15 @@ vec3 hueShift(vec3 color, float angle) {
 // ─── Lines ────────────────────────────────────────────────────────────────────
 
 export const linesFragment = PREAMBLE + `
+uniform float uExpandX;
+
 float random(in float x) {
   return fract(sin(x) * 1e4);
 }
 
 void main(void) {
   vec2 uv = (gl_FragCoord.xy * 2.0 - uResolution.xy) / min(uResolution.x, uResolution.y);
+  uv.x /= max(uExpandX, 0.001);
 
   float gridX = 256.0 / uMosaic;
   float gridY = 256.0 / (uMosaic * 0.5);

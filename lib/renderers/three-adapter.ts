@@ -10,6 +10,7 @@ type Uniforms = {
   uMosaic:     { value: number }
   uLines:      { value: number }
   uHue:        { value: number }
+  uExpandX:    { value: number }
 }
 
 export function createThreeAdapter(fragmentShader: string): RendererAdapter {
@@ -37,6 +38,7 @@ export function createThreeAdapter(fragmentShader: string): RendererAdapter {
         uMosaic:     { value: params.mosaic     ?? 4.0 },
         uLines:      { value: params.lines      ?? 5 },
         uHue:        { value: ((params.hue ?? 0) * Math.PI) / 180 },
+        uExpandX:    { value: params.expandX    ?? 1.0 },
       }
       speed = params.speed ?? 0.05
 
@@ -72,6 +74,7 @@ export function createThreeAdapter(fragmentShader: string): RendererAdapter {
       if (params.mosaic    !== undefined) uniforms.uMosaic.value    = params.mosaic
       if (params.lines     !== undefined) uniforms.uLines.value     = params.lines
       if (params.hue       !== undefined) uniforms.uHue.value       = (params.hue * Math.PI) / 180
+      if (params.expandX   !== undefined) uniforms.uExpandX.value   = params.expandX
     },
 
     resize(width, height) {

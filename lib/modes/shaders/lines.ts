@@ -15,6 +15,7 @@ export const linesMode: ModeDefinition = {
     { key: 'lineWidth', label: 'Espessura',  type: 'slider', min: 0.0001, max: 0.003, step: 0.0001, default: 0.0008 },
     { key: 'mosaic',    label: 'Pixelação',  type: 'slider', min: 1,      max: 16,    step: 0.5,    default: 4.0 },
     { key: 'lines',     label: 'Linhas',     type: 'slider', min: 1,      max: 8,     step: 1,      default: 5 },
+    { key: 'expandX',   label: 'Expansão H', type: 'slider', min: 0.25,   max: 4.0,   step: 0.25,   default: 1.0 },
     { key: 'hue',       label: 'Cor',        type: 'hue',    min: 0,      max: 360,   step: 1,      default: 0 },
   ],
   createAdapter: () => createThreeAdapter(linesFragment),
