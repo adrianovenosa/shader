@@ -49,6 +49,7 @@ export function ShaderControls({
   const [presetName, setPresetName]   = useState('')
   const [editingKey, setEditingKey] = useState<string | null>(null)
   const [draftValue, setDraftValue] = useState('')
+  const cancelEditRef = useRef(false)
 
   useEffect(() => {
     const show = () => {
@@ -254,10 +255,17 @@ export function ShaderControls({
                         value={draftValue}
                         autoFocus
                         onChange={e => setDraftValue(e.target.value)}
-                        onBlur={() => commitEdit(schema)}
+                        onBlur={() => {
+                          if (cancelEditRef.current) {
+                            cancelEditRef.current = false
+                            setEditingKey(null)
+                          } else {
+                            commitEdit(schema)
+                          }
+                        }}
                         onKeyDown={e => {
-                          if (e.key === 'Enter') { commitEdit(schema); e.currentTarget.blur() }
-                          if (e.key === 'Escape') { setEditingKey(null) }
+                          if (e.key === 'Enter') { e.currentTarget.blur() }
+                          if (e.key === 'Escape') { cancelEditRef.current = true; e.currentTarget.blur() }
                         }}
                         className="w-14 text-right text-[11px] bg-transparent border-b border-white/30 text-white/80 outline-none"
                       />
