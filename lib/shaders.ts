@@ -21,7 +21,6 @@ uniform float uLineWidth;
 uniform float uMosaic;
 uniform float uLines;
 uniform float uHue;
-uniform float uExpandX;
 
 vec3 hueShift(vec3 color, float angle) {
   const vec3 k = vec3(0.57735);
@@ -33,6 +32,8 @@ vec3 hueShift(vec3 color, float angle) {
 // ─── Lines ────────────────────────────────────────────────────────────────────
 
 export const linesFragment = PREAMBLE + `
+uniform float uExpandX;
+
 float random(in float x) {
   return fract(sin(x) * 1e4);
 }
