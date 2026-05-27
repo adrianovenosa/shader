@@ -56,7 +56,7 @@ export default function Page() {
         setPresets(loadPresets(modeId))
       }
     }
-    setEffects(loadEffects())
+    setEffects(loadEffects(modeId ?? DEFAULT_MODE_ID))
     const pl = loadPlaylist()
     setPlaylist(pl)
     setAlwaysFullscreen(pl.alwaysFullscreen)
@@ -77,6 +77,7 @@ export default function Page() {
 
   const handleModeChange = useCallback((id: string) => {
     saveModeParams(prevModeId.current, params)
+    saveEffects(prevModeId.current, effects)
     prevModeId.current = id
 
     const mode = MODES.find(m => m.id === id) ?? MODES[0]
@@ -84,9 +85,10 @@ export default function Page() {
     setActiveModeId(id)
     setActiveTab(mode.tab)
     setParams(stored ?? defaultsFromSchema(mode.params))
+    setEffects(loadEffects(id))
     setPresets(loadPresets(id))
     saveActiveMode(id, mode.tab)
-  }, [params])
+  }, [params, effects])
 
   const handleTabChange = useCallback((tab: 'shaders' | 'generative') => {
     setActiveTab(tab)
@@ -124,8 +126,8 @@ export default function Page() {
   const handleEffectsChange = useCallback((e: EffectState) => {
     setEffects(e)
     if (effectsSaveTimerRef.current) clearTimeout(effectsSaveTimerRef.current)
-    effectsSaveTimerRef.current = setTimeout(() => saveEffects(e), 300)
-  }, [])
+    effectsSaveTimerRef.current = setTimeout(() => saveEffects(activeModeId, e), 300)
+  }, [activeModeId])
 
   const handlePlaylistChange = useCallback((p: PlaylistState) => {
     setPlaylist(p)

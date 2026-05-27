@@ -18,12 +18,12 @@ export const DEFAULT_EFFECTS: EffectState = {
   bloom:    { enabled: false, intensity: 0.4, threshold: 0.6 },
 }
 
-const KEY = 'shader-app-effects'
+const key = (modeId: string) => `shader-app-effects-${modeId}`
 
-export function loadEffects(): EffectState {
+export function loadEffects(modeId: string): EffectState {
   if (typeof window === 'undefined') return DEFAULT_EFFECTS
   try {
-    const raw = localStorage.getItem(KEY)
+    const raw = localStorage.getItem(key(modeId))
     if (!raw) return DEFAULT_EFFECTS
     const parsed = JSON.parse(raw)
     return {
@@ -36,7 +36,7 @@ export function loadEffects(): EffectState {
   } catch { return DEFAULT_EFFECTS }
 }
 
-export function saveEffects(effects: EffectState) {
+export function saveEffects(modeId: string, effects: EffectState) {
   if (typeof window === 'undefined') return
-  try { localStorage.setItem(KEY, JSON.stringify(effects)) } catch {}
+  try { localStorage.setItem(key(modeId), JSON.stringify(effects)) } catch {}
 }
