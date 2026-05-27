@@ -14,6 +14,7 @@ interface Store {
   presets?: Record<string, Preset[]>
   outputSize?: { width: number; height: number; mode: 'full' | 'custom' }
   defaultImage?: string
+  defaultImageTransform?: { x: number; y: number; scale: number }
   defaultResolution?: { width: number; height: number; mode: 'full' | 'custom' }
 }
 
@@ -82,7 +83,16 @@ export function saveDefaultImage(base64: string) {
 export function clearDefaultImage() {
   const s = load()
   delete s.defaultImage
+  delete s.defaultImageTransform
   save(s)
+}
+
+export function loadDefaultImageTransform(): { x: number; y: number; scale: number } | null {
+  return load().defaultImageTransform ?? null
+}
+
+export function saveDefaultImageTransform(t: { x: number; y: number; scale: number }) {
+  save({ ...load(), defaultImageTransform: t })
 }
 
 // Returns null when no default has been set; callers should fall back to loadOutputSize()

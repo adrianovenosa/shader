@@ -16,6 +16,7 @@ import {
   loadLastMode, saveActiveMode,
   loadDefaultImage, saveDefaultImage, clearDefaultImage,
   loadDefaultResolution, saveDefaultResolution,
+  loadDefaultImageTransform, saveDefaultImageTransform,
 } from '@/lib/presets'
 
 beforeEach(() => { Object.keys(store).forEach(k => delete store[k]) })
@@ -109,5 +110,21 @@ describe('defaultResolution', () => {
     saveDefaultImage('data:image/png;base64,abc123')
     saveDefaultResolution({ width: 1080, height: 1080, mode: 'custom' })
     expect(loadDefaultImage()).toBe('data:image/png;base64,abc123')
+  })
+})
+
+describe('defaultImageTransform', () => {
+  it('returns null when nothing saved', () => {
+    expect(loadDefaultImageTransform()).toBeNull()
+  })
+  it('round-trips a transform', () => {
+    saveDefaultImageTransform({ x: 100, y: -50, scale: 1.5 })
+    expect(loadDefaultImageTransform()).toEqual({ x: 100, y: -50, scale: 1.5 })
+  })
+  it('clearDefaultImage also clears the transform', () => {
+    saveDefaultImage('data:image/png;base64,test')
+    saveDefaultImageTransform({ x: 10, y: 20, scale: 2 })
+    clearDefaultImage()
+    expect(loadDefaultImageTransform()).toBeNull()
   })
 })
