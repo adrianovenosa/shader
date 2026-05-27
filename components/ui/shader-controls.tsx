@@ -160,7 +160,7 @@ export function ShaderControls({
         aria-hidden={!open}
         className={[
           'dark',
-          'absolute top-11 right-0 w-64 max-h-[90vh] overflow-y-auto',
+          'absolute top-11 right-0 w-80 max-h-[90vh] overflow-y-auto',
           'bg-black/80 backdrop-blur-md border border-white/10 rounded-2xl p-4',
           'flex flex-col gap-3',
           'transition-all duration-200 origin-top-right',
@@ -170,8 +170,8 @@ export function ShaderControls({
         {/* Tabs */}
         <Tabs value={activeTab} onValueChange={v => onTabChange(v as 'shaders' | 'generative')}>
           <TabsList className="w-full bg-white/5 h-8">
-            <TabsTrigger value="shaders" className="flex-1 text-[10px] font-semibold">Shaders</TabsTrigger>
-            <TabsTrigger value="generative" className="flex-1 text-[10px] font-semibold">Generativo</TabsTrigger>
+            <TabsTrigger value="shaders" className="flex-1 text-xs font-semibold">Shaders</TabsTrigger>
+            <TabsTrigger value="generative" className="flex-1 text-xs font-semibold">Generativo</TabsTrigger>
           </TabsList>
         </Tabs>
 
@@ -189,7 +189,7 @@ export function ShaderControls({
               style={{ background: m.thumbnail.bg }}
             >
               {m.thumbnailArt?.()}
-              <span className="absolute bottom-0.5 inset-x-0 text-center text-[6px] font-semibold text-white/70 leading-none">
+              <span className="absolute bottom-0.5 inset-x-0 text-center text-[8px] font-semibold text-white/70 leading-none">
                 {m.name}
               </span>
             </button>
@@ -201,14 +201,14 @@ export function ShaderControls({
         {/* Dynamic controls */}
         {activeMode && (
           <>
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-white/30">
+            <p className="text-xs font-semibold uppercase tracking-widest text-white/30">
               {activeMode.name}
             </p>
             {activeMode.params.map(schema => {
               const val = params[schema.key] ?? schema.default
               if (schema.type === 'hue') return (
                 <div key={schema.key} className="flex flex-col gap-1.5">
-                  <div className="flex justify-between text-[11px]">
+                  <div className="flex justify-between text-[13px]">
                     <span className="text-white/70">{schema.label}</span>
                     <span className="text-white/30">{Math.round(val)}°</span>
                   </div>
@@ -224,21 +224,21 @@ export function ShaderControls({
                 <button
                   key={schema.key}
                   onClick={handleButton(schema)}
-                  className="border border-white/20 rounded-lg p-2 text-[10px] text-white/50 hover:text-white/80 hover:border-white/30 transition-colors"
+                  className="border border-white/20 rounded-lg p-2 text-xs text-white/50 hover:text-white/80 hover:border-white/30 transition-colors"
                 >
                   {schema.label}
                 </button>
               )
               if (schema.type === 'select') return (
                 <div key={schema.key} className="flex flex-col gap-1.5">
-                  <span className="text-[11px] text-white/70">{schema.label}</span>
+                  <span className="text-[13px] text-white/70">{schema.label}</span>
                   <div className="flex gap-1 flex-wrap">
                     {schema.options?.map((opt, i) => (
                       <button
                         key={opt}
                         onClick={() => handleSelect(schema, i)}
                         className={[
-                          'text-[9px] px-2 py-1 rounded-md transition-colors',
+                          'text-[11px] px-2 py-1 rounded-md transition-colors',
                           Math.round(val) === i
                             ? 'bg-blue-500/30 text-blue-300 border border-blue-500/40'
                             : 'bg-white/8 text-white/40 border border-white/10',
@@ -255,7 +255,7 @@ export function ShaderControls({
               const clampedVal = Math.min(schema.max ?? Infinity, Math.max(schema.min ?? -Infinity, val))
               return (
                 <div key={schema.key} className="flex flex-col gap-1.5">
-                  <div className="flex justify-between text-[11px] items-center">
+                  <div className="flex justify-between text-[13px] items-center">
                     <span className="text-white/70">{schema.label}</span>
                     {editingKey === schema.key ? (
                       <input
@@ -275,13 +275,13 @@ export function ShaderControls({
                           if (e.key === 'Enter') { e.currentTarget.blur() }
                           if (e.key === 'Escape') { cancelEditRef.current = true; e.currentTarget.blur() }
                         }}
-                        className="w-14 text-right text-[11px] bg-transparent border-b border-white/30 text-white/80 outline-none"
+                        className="w-14 text-right text-[13px] bg-transparent border-b border-white/30 text-white/80 outline-none"
                       />
                     ) : (
                       <button
                         type="button"
                         onClick={() => { setEditingKey(schema.key); setDraftValue(display) }}
-                        className="text-white/30 hover:text-white/60 text-[11px] bg-transparent border-none cursor-pointer"
+                        className="text-white/30 hover:text-white/60 text-[13px] bg-transparent border-none cursor-pointer"
                       >
                         {display}
                       </button>
@@ -312,20 +312,20 @@ export function ShaderControls({
         )}
 
         {/* Presets */}
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-white/30">Presets</p>
+        <p className="text-xs font-semibold uppercase tracking-widest text-white/30">Presets</p>
         {presets.length > 0 && (
           <div className="flex flex-col gap-1">
             {presets.map(p => (
               <div key={p.id} className="flex items-center justify-between bg-white/6 rounded-lg px-2.5 py-1.5">
                 <button
                   onClick={() => onLoadPreset(p)}
-                  className="text-[10px] text-white/60 hover:text-white flex-1 text-left"
+                  className="text-xs text-white/60 hover:text-white flex-1 text-left"
                 >
                   {p.name}
                 </button>
                 <button
                   onClick={() => onDeletePreset(p.id)}
-                  className="text-[9px] text-white/20 hover:text-red-400 ml-2"
+                  className="text-[11px] text-white/20 hover:text-red-400 ml-2"
                 >✕</button>
               </div>
             ))}
@@ -341,12 +341,12 @@ export function ShaderControls({
               placeholder="Nome do preset"
               className="flex-1 h-7 text-xs"
             />
-            <button onClick={handleSavePreset} className="text-[10px] text-blue-400 px-2">OK</button>
+            <button onClick={handleSavePreset} className="text-xs text-blue-400 px-2">OK</button>
           </div>
         ) : (
           <button
             onClick={() => setSavingPreset(true)}
-            className="border border-dashed border-indigo-500/40 rounded-lg p-2 text-[10px] text-indigo-400/70 hover:text-indigo-300 hover:border-indigo-400/60 transition-colors"
+            className="border border-dashed border-indigo-500/40 rounded-lg p-2 text-xs text-indigo-400/70 hover:text-indigo-300 hover:border-indigo-400/60 transition-colors"
           >
             📌 Salvar preset
           </button>
@@ -355,7 +355,7 @@ export function ShaderControls({
         <Separator className="bg-white/10" />
 
         {/* Output size */}
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-white/30">Output</p>
+        <p className="text-xs font-semibold uppercase tracking-widest text-white/30">Output</p>
         <div className="flex items-center gap-1.5">
           <Label className="sr-only" htmlFor="output-w">Largura</Label>
           <Input
@@ -366,7 +366,7 @@ export function ShaderControls({
             min={1}
             className="h-7 text-xs text-center"
           />
-          <span className="text-[10px] text-white/20">×</span>
+          <span className="text-xs text-white/20">×</span>
           <Label className="sr-only" htmlFor="output-h">Altura</Label>
           <Input
             id="output-h"
@@ -387,7 +387,7 @@ export function ShaderControls({
                 key={op.label}
                 onClick={() => onOutputChange(op.w || outputWidth, op.h || outputHeight, op.mode)}
                 className={[
-                  'text-[8px] px-2 py-0.5 rounded transition-colors',
+                  'text-[10px] px-2 py-0.5 rounded transition-colors',
                   active
                     ? 'bg-white/15 text-white/80 border border-white/20'
                     : 'bg-white/6 text-white/35 border border-white/8',
@@ -408,7 +408,7 @@ export function ShaderControls({
           className="border border-dashed border-white/20 rounded-lg p-2.5 flex flex-col items-center gap-1 text-white/40 hover:text-white/60 hover:border-white/30 transition-colors"
         >
           <span className="text-lg leading-none">🖼</span>
-          <span className="text-[10px]">Carregar PNG</span>
+          <span className="text-xs">Carregar PNG</span>
         </button>
         {imageUrl && (
           <button
@@ -416,14 +416,14 @@ export function ShaderControls({
             className="border border-dashed border-red-500/30 rounded-lg p-2.5 flex flex-col items-center gap-1 text-red-400/60 hover:text-red-400 transition-colors"
           >
             <span className="text-lg leading-none">🗑</span>
-            <span className="text-[10px]">Remover imagem</span>
+            <span className="text-xs">Remover imagem</span>
           </button>
         )}
 
         <Separator className="bg-white/10" />
 
         {/* Apresentação */}
-        <p className="text-[10px] font-semibold uppercase tracking-widest text-white/30">Apresentação</p>
+        <p className="text-xs font-semibold uppercase tracking-widest text-white/30">Apresentação</p>
 
         <div className="flex items-center gap-2">
           <Switch
@@ -431,14 +431,14 @@ export function ShaderControls({
             checked={alwaysFullscreen}
             onCheckedChange={onAlwaysFullscreenChange}
           />
-          <Label htmlFor="always-fullscreen" className="text-[11px] text-white/60 cursor-pointer font-normal">
+          <Label htmlFor="always-fullscreen" className="text-[13px] text-white/60 cursor-pointer font-normal">
             Sempre fullscreen
           </Label>
         </div>
 
         <button
           onClick={onPresentationOpen}
-          className="border border-white/20 rounded-lg p-2 text-[10px] text-white/50 hover:text-white/80 hover:border-white/30 transition-colors flex items-center justify-center gap-1.5"
+          className="border border-white/20 rounded-lg p-2 text-xs text-white/50 hover:text-white/80 hover:border-white/30 transition-colors flex items-center justify-center gap-1.5"
         >
           <span>▶</span> Iniciar apresentação
         </button>

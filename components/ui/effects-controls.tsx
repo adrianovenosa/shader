@@ -26,7 +26,7 @@ export function EffectsControls({ effects, onChange }: Props) {
 
   return (
     <>
-      <p className="text-[10px] font-semibold uppercase tracking-widest text-white/30">Efeitos</p>
+      <p className="text-xs font-semibold uppercase tracking-widest text-white/30">Efeitos</p>
 
       {(Object.keys(EFFECT_LABELS) as EffectKey[]).map(key => {
         const effect = effects[key]
@@ -40,12 +40,12 @@ export function EffectsControls({ effects, onChange }: Props) {
               />
               <Label
                 htmlFor={`effect-${key}`}
-                className="text-[11px] text-white/70 flex-1 cursor-pointer font-normal"
+                className="text-[13px] text-white/70 flex-1 cursor-pointer font-normal"
               >
                 {EFFECT_LABELS[key]}
               </Label>
               {effect.enabled && (
-                <span className="text-[11px] text-white/30">
+                <span className="text-[13px] text-white/30">
                   {effect.intensity.toFixed(2)}
                 </span>
               )}
@@ -65,7 +65,7 @@ export function EffectsControls({ effects, onChange }: Props) {
 
             {effect.enabled && key === 'halftone' && (
               <div className="flex flex-col gap-1 pl-9">
-                <div className="flex justify-between text-[11px]">
+                <div className="flex justify-between text-[13px]">
                   <span className="text-white/50">Dot size</span>
                   <span className="text-white/30">{effects.halftone.dotSize.toFixed(1)}</span>
                 </div>
@@ -83,7 +83,7 @@ export function EffectsControls({ effects, onChange }: Props) {
 
             {effect.enabled && key === 'bloom' && (
               <div className="flex flex-col gap-1 pl-9">
-                <div className="flex justify-between text-[11px]">
+                <div className="flex justify-between text-[13px]">
                   <span className="text-white/50">Threshold</span>
                   <span className="text-white/30">{effects.bloom.threshold.toFixed(2)}</span>
                 </div>
