@@ -32,12 +32,15 @@ vec3 hueShift(vec3 color, float angle) {
 // ─── Lines ────────────────────────────────────────────────────────────────────
 
 export const linesFragment = PREAMBLE + `
+uniform float uExpandX;
+
 float random(in float x) {
   return fract(sin(x) * 1e4);
 }
 
 void main(void) {
   vec2 uv = (gl_FragCoord.xy * 2.0 - uResolution.xy) / min(uResolution.x, uResolution.y);
+  uv.x /= max(uExpandX, 0.001);
 
   float gridX = 256.0 / uMosaic;
   float gridY = 256.0 / (uMosaic * 0.5);
@@ -63,6 +66,8 @@ void main(void) {
 // ─── Waves ────────────────────────────────────────────────────────────────────
 
 export const wavesFragment = PREAMBLE + `
+uniform float uAmplitude;
+
 void main(void) {
   vec2 uv = (gl_FragCoord.xy * 2.0 - uResolution.xy) / min(uResolution.x, uResolution.y);
 
@@ -75,7 +80,7 @@ void main(void) {
   for (int j = 0; j < 3; j++) {
     for (int i = 0; i < 8; i++) {
       if (float(i) >= uLines) break;
-      float wave = sin(uv.x * 3.0 + uTime * 0.04 + float(i) * 0.6 + float(j) * 1.05) * 0.3;
+      float wave = sin(uv.x * 3.0 + uTime * 0.04 + float(i) * 0.6 + float(j) * 1.05) * uAmplitude;
       float dist = abs(uv.y - wave);
       color[j] += uLineWidth * float(i + 1) / (dist + 0.001);
     }

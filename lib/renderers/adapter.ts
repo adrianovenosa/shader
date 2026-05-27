@@ -1,5 +1,6 @@
 // lib/renderers/adapter.ts
 import type React from 'react'
+import type { EffectState } from '@/lib/effects'
 
 export interface ParamSchema {
   key: string
@@ -32,6 +33,7 @@ export interface RendererAdapter {
   updateParams(params: Record<string, number>): void
   resize(width: number, height: number): void
   dispose(): void
+  updateEffects?(effects: EffectState): void
 }
 
 export function defaultsFromSchema(params: ParamSchema[]): Record<string, number> {
