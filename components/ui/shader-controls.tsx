@@ -7,6 +7,8 @@ import type { ParamSchema } from '@/lib/renderers/adapter'
 import { formatParamValue } from '@/lib/format-param'
 import { type EffectState } from '@/lib/effects'
 import { EffectsControls } from '@/components/ui/effects-controls'
+import { type PlaylistState } from '@/lib/playlist'
+import { PlaylistEditor } from '@/components/ui/playlist-editor'
 
 interface Props {
   open: boolean
@@ -29,6 +31,11 @@ interface Props {
   imageUrl: string | null
   effects: EffectState
   onEffectsChange: (e: EffectState) => void
+  playlist: PlaylistState
+  onPlaylistChange: (p: PlaylistState) => void
+  onPresentationOpen: () => void
+  alwaysFullscreen: boolean
+  onAlwaysFullscreenChange: (v: boolean) => void
 }
 
 const OUTPUT_PRESETS = [
@@ -45,6 +52,8 @@ export function ShaderControls({
   outputWidth, outputHeight, outputMode, onOutputChange,
   onImageUpload, imageUrl,
   effects, onEffectsChange,
+  playlist, onPlaylistChange, onPresentationOpen,
+  alwaysFullscreen, onAlwaysFullscreenChange,
 }: Props) {
   const fileRef       = useRef<HTMLInputElement>(null)
   const prevUrlRef    = useRef<string | null>(null)
@@ -397,6 +406,44 @@ export function ShaderControls({
             <span className="text-[10px]">Remover imagem</span>
           </button>
         )}
+
+        <div className="h-px bg-white/10" />
+
+        {/* Apresentação */}
+        <p className="text-[10px] font-semibold uppercase tracking-widest text-white/30">Apresentação</p>
+
+        {/* Always fullscreen toggle */}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => onAlwaysFullscreenChange(!alwaysFullscreen)}
+            className={[
+              'relative w-7 h-4 rounded-full transition-colors shrink-0',
+              alwaysFullscreen ? 'bg-blue-500' : 'bg-white/15',
+            ].join(' ')}
+          >
+            <span className={[
+              'absolute top-0.5 w-3 h-3 rounded-full bg-white transition-transform',
+              alwaysFullscreen ? 'translate-x-3.5' : 'translate-x-0.5',
+            ].join(' ')} />
+          </button>
+          <span className="text-[11px] text-white/60">Sempre fullscreen</span>
+        </div>
+
+        {/* Start presentation button */}
+        <button
+          onClick={onPresentationOpen}
+          className="border border-white/20 rounded-lg p-2 text-[10px] text-white/50 hover:text-white/80 hover:border-white/30 transition-colors flex items-center justify-center gap-1.5"
+        >
+          <span>▶</span> Iniciar apresentação
+        </button>
+
+        <PlaylistEditor
+          playlist={playlist}
+          onChange={onPlaylistChange}
+          currentModeId={activeModeId}
+          currentPresets={presets}
+        />
       </div>
     </div>
   )
