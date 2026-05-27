@@ -88,7 +88,7 @@ export function PlaylistEditor({ playlist, onChange, currentModeId, currentPrese
               onChange={e => setDurationDraft(e.target.value)}
               onBlur={() => commitDuration(i)}
               onKeyDown={e => {
-                if (e.key === 'Enter') { commitDuration(i); e.currentTarget.blur() }
+                if (e.key === 'Enter') e.currentTarget.blur()
                 if (e.key === 'Escape') setDurationEditing(null)
               }}
               className="w-10 text-right text-[10px] bg-transparent border-b border-white/30 text-white/70 outline-none"
