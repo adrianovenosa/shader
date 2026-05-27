@@ -15,6 +15,7 @@ export const wavesMode: ModeDefinition = {
     { key: 'lineWidth', label: 'Espessura',  type: 'slider', min: 0.0001, max: 0.003, step: 0.0001, default: 0.0008 },
     { key: 'mosaic',    label: 'Pixelação',  type: 'slider', min: 1,      max: 16,    step: 0.5,    default: 4.0 },
     { key: 'lines',     label: 'Linhas',     type: 'slider', min: 1,      max: 8,     step: 1,      default: 5 },
+    { key: 'amplitude', label: 'Amplitude',  type: 'slider', min: 0.05,   max: 0.8,   step: 0.05,   default: 0.3 },
     { key: 'hue',       label: 'Cor',        type: 'hue',    min: 0,      max: 360,   step: 1,      default: 0 },
   ],
   createAdapter: () => createThreeAdapter(wavesFragment),

@@ -86,6 +86,7 @@ type MainUniforms = {
   uLines:      { value: number }
   uHue:        { value: number }
   uExpandX:    { value: number }
+  uAmplitude:  { value: number }
 }
 
 type PostUniforms = {
@@ -143,6 +144,7 @@ export function createThreeAdapter(fragmentShader: string): RendererAdapter {
         uLines:      { value: params.lines     ?? 5 },
         uHue:        { value: ((params.hue ?? 0) * Math.PI) / 180 },
         uExpandX:    { value: params.expandX   ?? 1.0 },
+        uAmplitude:  { value: params.amplitude ?? 0.3 },
       }
       speed = params.speed ?? 0.05
       geo1 = new THREE.PlaneGeometry(2, 2)
@@ -195,6 +197,7 @@ export function createThreeAdapter(fragmentShader: string): RendererAdapter {
       if (params.lines     !== undefined) uniforms1.uLines.value     = params.lines
       if (params.hue       !== undefined) uniforms1.uHue.value       = (params.hue * Math.PI) / 180
       if (params.expandX   !== undefined) uniforms1.uExpandX.value   = params.expandX
+      if (params.amplitude !== undefined) uniforms1.uAmplitude.value = params.amplitude
     },
 
     updateEffects(effects: EffectState) {
