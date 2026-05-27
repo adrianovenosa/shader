@@ -170,6 +170,9 @@ export function createThreeAdapter(fragmentShader: string): RendererAdapter {
       renderer = new THREE.WebGLRenderer()
       renderer.setPixelRatio(window.devicePixelRatio)
       renderer.setSize(w, h)
+      renderTarget.setSize(renderer.domElement.width, renderer.domElement.height)
+      uniforms1!.uResolution.value.set(renderer.domElement.width, renderer.domElement.height)
+      postUniforms!.uResolution.value.set(renderer.domElement.width, renderer.domElement.height)
       container.appendChild(renderer.domElement)
 
       const tick = () => {
