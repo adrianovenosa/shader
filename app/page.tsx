@@ -9,6 +9,8 @@ import { DraggableImage } from '@/components/ui/draggable-image'
 import {
   loadModeParams, saveModeParams, loadPresets, addPreset, removePreset,
   loadOutputSize, saveOutputSize, loadLastMode, saveActiveMode,
+  loadDefaultImage, saveDefaultImage, clearDefaultImage,
+  loadDefaultResolution, saveDefaultResolution,
   type Preset,
 } from '@/lib/presets'
 import { defaultsFromSchema } from '@/lib/renderers/adapter'
@@ -26,6 +28,8 @@ export default function Page() {
   const [outputWidth,  setOutputWidth]  = useState(1920)
   const [outputHeight, setOutputHeight] = useState(1080)
   const [outputMode,   setOutputMode]   = useState<'full' | 'custom'>('full')
+  const [defaultImageBase64,  setDefaultImageBase64]  = useState<string | null>(null)
+  const [defaultResolution,   setDefaultResolution]   = useState<{ width: number; height: number; mode: 'full' | 'custom' } | null>(null)
   const [params,       setParams]       = useState<Record<string, number>>(() => {
     const mode = MODES.find(m => m.id === DEFAULT_MODE_ID) ?? MODES[0]
     return defaultsFromSchema(mode.params)
@@ -41,10 +45,20 @@ export default function Page() {
 
   useEffect(() => {
     const { modeId, tab } = loadLastMode()
-    const size = loadOutputSize()
+
+    const defRes = loadDefaultResolution()
+    setDefaultResolution(defRes)
+    const size = defRes ?? loadOutputSize()
     setOutputWidth(size.width)
     setOutputHeight(size.height)
     setOutputMode(size.mode)
+
+    const defImg = loadDefaultImage()
+    if (defImg) {
+      setImageUrl(defImg)
+      setDefaultImageBase64(defImg)
+    }
+
     if (modeId) {
       const mode = MODES.find(m => m.id === modeId)
       if (mode) {
@@ -123,6 +137,30 @@ export default function Page() {
     saveOutputSize({ width: w, height: h, mode })
   }, [])
 
+  const handleSetDefaultImage = useCallback((base64: string) => {
+    saveDefaultImage(base64)
+    setDefaultImageBase64(base64)
+  }, [])
+
+  const handleClearDefaultImage = useCallback(() => {
+    clearDefaultImage()
+    setDefaultImageBase64(null)
+  }, [])
+
+  const handleSetDefaultResolution = useCallback(() => {
+    const size = { width: outputWidth, height: outputHeight, mode: outputMode }
+    saveDefaultResolution(size)
+    setDefaultResolution(size)
+  }, [outputWidth, outputHeight, outputMode])
+
+  const handleResetToDefaultResolution = useCallback(() => {
+    if (!defaultResolution) return
+    setOutputWidth(defaultResolution.width)
+    setOutputHeight(defaultResolution.height)
+    setOutputMode(defaultResolution.mode)
+    saveOutputSize(defaultResolution)
+  }, [defaultResolution])
+
   const handleEffectsChange = useCallback((e: EffectState) => {
     setEffects(e)
     if (effectsSaveTimerRef.current) clearTimeout(effectsSaveTimerRef.current)
@@ -175,6 +213,12 @@ export default function Page() {
         onOutputChange={handleOutputChange}
         onImageUpload={setImageUrl}
         imageUrl={imageUrl}
+        defaultImageBase64={defaultImageBase64}
+        onSetDefaultImage={handleSetDefaultImage}
+        onClearDefaultImage={handleClearDefaultImage}
+        defaultResolution={defaultResolution}
+        onSetDefaultResolution={handleSetDefaultResolution}
+        onResetToDefaultResolution={handleResetToDefaultResolution}
         effects={effects}
         onEffectsChange={handleEffectsChange}
         playlist={playlist}
