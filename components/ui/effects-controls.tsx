@@ -26,8 +26,6 @@ export function EffectsControls({ effects, onChange }: Props) {
 
   return (
     <>
-      <p className="text-xs font-semibold uppercase tracking-widest text-white/30">Efeitos</p>
-
       {(Object.keys(EFFECT_LABELS) as EffectKey[]).map(key => {
         const effect = effects[key]
         return (
