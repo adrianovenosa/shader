@@ -14,6 +14,8 @@ import {
   loadPresets, addPreset, removePreset,
   loadOutputSize, saveOutputSize,
   loadLastMode, saveActiveMode,
+  loadDefaultImage, saveDefaultImage, clearDefaultImage,
+  loadDefaultResolution, saveDefaultResolution,
 } from '@/lib/presets'
 
 beforeEach(() => { Object.keys(store).forEach(k => delete store[k]) })
@@ -67,5 +69,40 @@ describe('activeMode', () => {
   it('round-trips mode + tab', () => {
     saveActiveMode('kaleidoscope', 'generative')
     expect(loadLastMode()).toEqual({ modeId: 'kaleidoscope', tab: 'generative' })
+  })
+})
+
+describe('defaultImage', () => {
+  it('returns null when nothing saved', () => {
+    expect(loadDefaultImage()).toBeNull()
+  })
+  it('round-trips a base64 data URL', () => {
+    saveDefaultImage('data:image/png;base64,abc123')
+    expect(loadDefaultImage()).toBe('data:image/png;base64,abc123')
+  })
+  it('clear removes the saved image', () => {
+    saveDefaultImage('data:image/png;base64,abc123')
+    clearDefaultImage()
+    expect(loadDefaultImage()).toBeNull()
+  })
+  it('clearing does not affect other stored values', () => {
+    saveModeParams('lines', { speed: 0.5 })
+    saveDefaultImage('data:image/png;base64,test')
+    clearDefaultImage()
+    expect(loadModeParams('lines')).toEqual({ speed: 0.5 })
+  })
+})
+
+describe('defaultResolution', () => {
+  it('returns null when nothing saved', () => {
+    expect(loadDefaultResolution()).toBeNull()
+  })
+  it('round-trips a custom resolution', () => {
+    saveDefaultResolution({ width: 1080, height: 1080, mode: 'custom' })
+    expect(loadDefaultResolution()).toEqual({ width: 1080, height: 1080, mode: 'custom' })
+  })
+  it('round-trips full mode resolution', () => {
+    saveDefaultResolution({ width: 1920, height: 1080, mode: 'full' })
+    expect(loadDefaultResolution()).toEqual({ width: 1920, height: 1080, mode: 'full' })
   })
 })

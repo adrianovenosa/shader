@@ -13,6 +13,8 @@ interface Store {
   modeParams?: Record<string, Record<string, number>>
   presets?: Record<string, Preset[]>
   outputSize?: { width: number; height: number; mode: 'full' | 'custom' }
+  defaultImage?: string
+  defaultResolution?: { width: number; height: number; mode: 'full' | 'custom' }
 }
 
 function load(): Store {
@@ -67,4 +69,26 @@ export function loadLastMode(): { modeId: string | null; tab: 'shaders' | 'gener
 
 export function saveActiveMode(modeId: string, tab: 'shaders' | 'generative') {
   save({ ...load(), activeMode: modeId, activeTab: tab })
+}
+
+export function loadDefaultImage(): string | null {
+  return load().defaultImage ?? null
+}
+
+export function saveDefaultImage(base64: string) {
+  save({ ...load(), defaultImage: base64 })
+}
+
+export function clearDefaultImage() {
+  const s = load()
+  delete s.defaultImage
+  save(s)
+}
+
+export function loadDefaultResolution(): { width: number; height: number; mode: 'full' | 'custom' } | null {
+  return load().defaultResolution ?? null
+}
+
+export function saveDefaultResolution(size: { width: number; height: number; mode: 'full' | 'custom' }) {
+  save({ ...load(), defaultResolution: size })
 }
