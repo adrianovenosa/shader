@@ -85,6 +85,7 @@ export function clearDefaultImage() {
   save(s)
 }
 
+// Returns null when no default has been set; callers should fall back to loadOutputSize()
 export function loadDefaultResolution(): { width: number; height: number; mode: 'full' | 'custom' } | null {
   return load().defaultResolution ?? null
 }

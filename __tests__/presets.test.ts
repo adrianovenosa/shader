@@ -105,4 +105,9 @@ describe('defaultResolution', () => {
     saveDefaultResolution({ width: 1920, height: 1080, mode: 'full' })
     expect(loadDefaultResolution()).toEqual({ width: 1920, height: 1080, mode: 'full' })
   })
+  it('saving resolution does not affect defaultImage', () => {
+    saveDefaultImage('data:image/png;base64,abc123')
+    saveDefaultResolution({ width: 1080, height: 1080, mode: 'custom' })
+    expect(loadDefaultImage()).toBe('data:image/png;base64,abc123')
+  })
 })
