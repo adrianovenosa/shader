@@ -36,6 +36,7 @@ export default function Page() {
   const [playlist, setPlaylist]                     = useState<PlaylistState>(DEFAULT_PLAYLIST)
   const [alwaysFullscreen, setAlwaysFullscreen]     = useState(false)
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
+  const effectsSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const prevModeId = useRef(DEFAULT_MODE_ID)
 
   useEffect(() => {
@@ -64,6 +65,8 @@ export default function Page() {
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return
       if ((e.key === 'p' || e.key === 'P') && !e.metaKey && !e.ctrlKey) {
         setPresentationActive(prev => !prev)
       }
@@ -120,7 +123,8 @@ export default function Page() {
 
   const handleEffectsChange = useCallback((e: EffectState) => {
     setEffects(e)
-    saveEffects(e)
+    if (effectsSaveTimerRef.current) clearTimeout(effectsSaveTimerRef.current)
+    effectsSaveTimerRef.current = setTimeout(() => saveEffects(e), 300)
   }, [])
 
   const handlePlaylistChange = useCallback((p: PlaylistState) => {

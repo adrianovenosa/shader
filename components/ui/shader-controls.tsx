@@ -78,6 +78,8 @@ export function ShaderControls({
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
+      const target = e.target as HTMLElement
+      if (target.tagName === 'INPUT' || target.tagName === 'TEXTAREA' || target.isContentEditable) return
       if (e.key === 'h' || e.key === 'H') onToggle()
       if (e.key === 'f' || e.key === 'F') {
         document.fullscreenElement
@@ -304,9 +306,12 @@ export function ShaderControls({
           </>
         )}
 
-        <EffectsControls effects={effects} onChange={onEffectsChange} />
-
-        <div className="h-px bg-white/10" />
+        {activeTab === 'shaders' && (
+          <>
+            <EffectsControls effects={effects} onChange={onEffectsChange} />
+            <div className="h-px bg-white/10" />
+          </>
+        )}
 
         {/* Presets */}
         <p className="text-[10px] font-semibold uppercase tracking-widest text-white/30">Presets</p>

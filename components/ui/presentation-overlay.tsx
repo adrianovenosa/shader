@@ -84,7 +84,11 @@ export function PresentationOverlay({ playlist, onExit, onLoadPreset }: Props) {
   }, [onExit])
 
   const goTo = (index: number) => {
-    const clamped = Math.max(0, Math.min(playlist.entries.length - 1, index))
+    const len = playlist.entries.length
+    if (len === 0) return
+    const clamped = playlist.loop
+      ? ((index % len) + len) % len  // modulo wrap
+      : Math.max(0, Math.min(len - 1, index))
     setCurrentIndex(clamped)
     setElapsed(0)
   }
