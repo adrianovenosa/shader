@@ -44,6 +44,10 @@ export default function Page() {
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const effectsSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const prevModeId = useRef(DEFAULT_MODE_ID)
+  const paramsRef = useRef(params)
+  paramsRef.current = params
+  const effectsRef = useRef(effects)
+  effectsRef.current = effects
 
   useEffect(() => {
     const { modeId, tab } = loadLastMode()
@@ -94,8 +98,8 @@ export default function Page() {
   }, [])
 
   const handleModeChange = useCallback((id: string) => {
-    saveModeParams(prevModeId.current, params)
-    saveEffects(prevModeId.current, effects)
+    saveModeParams(prevModeId.current, paramsRef.current)
+    saveEffects(prevModeId.current, effectsRef.current)
     prevModeId.current = id
 
     const mode = MODES.find(m => m.id === id) ?? MODES[0]
@@ -106,7 +110,7 @@ export default function Page() {
     setEffects(loadEffects(id))
     setPresets(loadPresets(id))
     saveActiveMode(id, mode.tab)
-  }, [params, effects])
+  }, [])
 
   const handleTabChange = useCallback((tab: 'shaders' | 'generative') => {
     setActiveTab(tab)

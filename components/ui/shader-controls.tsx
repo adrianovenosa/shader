@@ -11,6 +11,7 @@ import { type PlaylistState } from '@/lib/playlist'
 import { PlaylistEditor } from '@/components/ui/playlist-editor'
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { Slider } from '@/components/ui/slider'
+import { HueSlider } from '@/components/ui/hue-slider'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Switch } from '@/components/ui/switch'
@@ -119,13 +120,14 @@ export function ShaderControls({
   const [imageDefaultError, setImageDefaultError] = useState<string | null>(null)
   const cancelEditRef = useRef(false)
 
-  const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
-    if (typeof window === 'undefined') return SECTIONS_DEFAULT
+  const [openSections, setOpenSections] = useState<Record<string, boolean>>(SECTIONS_DEFAULT)
+
+  useEffect(() => {
     try {
       const raw = localStorage.getItem('shader-app-panel-sections')
-      return raw ? { ...SECTIONS_DEFAULT, ...JSON.parse(raw) } : SECTIONS_DEFAULT
-    } catch { return SECTIONS_DEFAULT }
-  })
+      if (raw) setOpenSections(prev => ({ ...prev, ...JSON.parse(raw) }))
+    } catch {}
+  }, [])
 
   const toggleSection = (key: string) => {
     setOpenSections(prev => {
@@ -302,13 +304,13 @@ export function ShaderControls({
                 <div key={schema.key} className="flex flex-col gap-1.5">
                   <div className="flex justify-between text-[13px]">
                     <span className="text-white/70">{schema.label}</span>
-                    <span className="text-white/55">{Math.round(val)}°</span>
+                    <span style={{ color: `hsl(${Math.round(val)}, 80%, 65%)` }}>
+                      {Math.round(val)}°
+                    </span>
                   </div>
-                  <input
-                    type="range" min={0} max={360} step={1} value={val}
-                    onChange={e => onParamChange({ ...params, [schema.key]: parseFloat(e.target.value) })}
-                    className="w-full h-1 rounded-full cursor-pointer accent-blue-400"
-                    style={{ background: 'linear-gradient(90deg,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00)' }}
+                  <HueSlider
+                    value={val}
+                    onChange={v => onParamChange({ ...params, [schema.key]: v })}
                   />
                 </div>
               )
