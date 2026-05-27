@@ -19,6 +19,8 @@ export function DraggableImage({ url, onRemove: _onRemove, initialTransform, onT
   const transform    = useRef(initialTransform ?? { x: 0, y: 0, scale: 1 })
   const dragState    = useRef<DragState | null>(null)
   const [handleVisible, setHandleVisible] = useState(false)
+  const onTransformChangeRef = useRef(onTransformChange)
+  useEffect(() => { onTransformChangeRef.current = onTransformChange }, [onTransformChange])
 
   useEffect(() => {
     const onKey = (e: KeyboardEvent) => {
@@ -98,7 +100,7 @@ export function DraggableImage({ url, onRemove: _onRemove, initialTransform, onT
 
     const onUp = () => {
       dragState.current = null
-      onTransformChange?.(transform.current)
+      onTransformChangeRef.current?.(transform.current)
     }
 
     handle.addEventListener("pointerdown", onHandleDown)

@@ -143,7 +143,7 @@ export default function Page() {
 
   const handleSetDefaultImage = useCallback((base64: string) => {
     saveDefaultImage(base64)
-    if (imageTransform) saveDefaultImageTransform(imageTransform)
+    saveDefaultImageTransform(imageTransform ?? { x: 0, y: 0, scale: 1 })
     setDefaultImageBase64(base64)
   }, [imageTransform])
 
