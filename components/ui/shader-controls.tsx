@@ -9,6 +9,12 @@ import { type EffectState } from '@/lib/effects'
 import { EffectsControls } from '@/components/ui/effects-controls'
 import { type PlaylistState } from '@/lib/playlist'
 import { PlaylistEditor } from '@/components/ui/playlist-editor'
+import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Slider } from '@/components/ui/slider'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { Separator } from '@/components/ui/separator'
+import { Switch } from '@/components/ui/switch'
 
 interface Props {
   open: boolean
@@ -94,11 +100,6 @@ export function ShaderControls({
   const activeMode = MODES.find(m => m.id === activeModeId)
   const tabModes   = MODES.filter(m => m.tab === activeTab)
 
-  const handleSlider = (schema: ParamSchema) => (e: ChangeEvent<HTMLInputElement>) => {
-    const raw = parseFloat(e.target.value)
-    onParamChange({ ...params, [schema.key]: schema.step === 1 ? Math.round(raw) : raw })
-  }
-
   const handleButton = (schema: ParamSchema) => () => {
     onParamChange({ ...params, [schema.key]: (params[schema.key] ?? 0) + 1 })
   }
@@ -158,6 +159,7 @@ export function ShaderControls({
       <div
         aria-hidden={!open}
         className={[
+          'dark',
           'absolute top-11 right-0 w-64 max-h-[90vh] overflow-y-auto',
           'bg-black/80 backdrop-blur-md border border-white/10 rounded-2xl p-4',
           'flex flex-col gap-3',
@@ -166,22 +168,12 @@ export function ShaderControls({
         ].join(' ')}
       >
         {/* Tabs */}
-        <div className="grid grid-cols-2 gap-1 bg-white/5 rounded-lg p-0.5">
-          {(['shaders', 'generative'] as const).map(tab => (
-            <button
-              key={tab}
-              onClick={() => onTabChange(tab)}
-              className={[
-                'text-[10px] py-1.5 rounded-md font-semibold transition-colors',
-                activeTab === tab
-                  ? 'bg-white/10 text-white'
-                  : 'text-white/35 hover:text-white/60',
-              ].join(' ')}
-            >
-              {tab === 'shaders' ? 'Shaders' : 'Generativo'}
-            </button>
-          ))}
-        </div>
+        <Tabs value={activeTab} onValueChange={v => onTabChange(v as 'shaders' | 'generative')}>
+          <TabsList className="w-full bg-white/5 h-8">
+            <TabsTrigger value="shaders" className="flex-1 text-[10px] font-semibold">Shaders</TabsTrigger>
+            <TabsTrigger value="generative" className="flex-1 text-[10px] font-semibold">Generativo</TabsTrigger>
+          </TabsList>
+        </Tabs>
 
         {/* Mode grid */}
         <div className={`grid gap-1.5 ${activeTab === 'shaders' ? 'grid-cols-4' : 'grid-cols-5'}`}>
@@ -204,7 +196,7 @@ export function ShaderControls({
           ))}
         </div>
 
-        <div className="h-px bg-white/10" />
+        <Separator className="bg-white/10" />
 
         {/* Dynamic controls */}
         {activeMode && (
@@ -222,7 +214,7 @@ export function ShaderControls({
                   </div>
                   <input
                     type="range" min={0} max={360} step={1} value={val}
-                    onChange={handleSlider(schema)}
+                    onChange={e => onParamChange({ ...params, [schema.key]: parseFloat(e.target.value) })}
                     className="w-full h-1 rounded-full cursor-pointer accent-blue-400"
                     style={{ background: 'linear-gradient(90deg,#f00,#ff0,#0f0,#0ff,#00f,#f0f,#f00)' }}
                   />
@@ -295,10 +287,16 @@ export function ShaderControls({
                       </button>
                     )}
                   </div>
-                  <input
-                    type="range" min={schema.min} max={schema.max} step={schema.step}
-                    value={clampedVal} onChange={handleSlider(schema)}
-                    className="w-full h-1 rounded-full cursor-pointer accent-blue-400"
+                  <Slider
+                    min={schema.min}
+                    max={schema.max}
+                    step={schema.step}
+                    value={[clampedVal]}
+                    onValueChange={values => {
+                      const v = typeof values === 'number' ? values : values[0]
+                      onParamChange({ ...params, [schema.key]: schema.step === 1 ? Math.round(v) : v })
+                    }}
+                    className="w-full"
                   />
                 </div>
               )
@@ -309,7 +307,7 @@ export function ShaderControls({
         {activeTab === 'shaders' && (
           <>
             <EffectsControls effects={effects} onChange={onEffectsChange} />
-            <div className="h-px bg-white/10" />
+            <Separator className="bg-white/10" />
           </>
         )}
 
@@ -334,14 +332,14 @@ export function ShaderControls({
           </div>
         )}
         {savingPreset ? (
-          <div className="flex gap-1">
-            <input
+          <div className="flex gap-1 items-center">
+            <Input
               autoFocus
               value={presetName}
               onChange={e => setPresetName(e.target.value)}
               onKeyDown={e => { if (e.key === 'Enter') handleSavePreset(); if (e.key === 'Escape') setSavingPreset(false) }}
               placeholder="Nome do preset"
-              className="flex-1 bg-white/8 border border-white/15 rounded-md px-2 py-1 text-[10px] text-white/80 outline-none"
+              className="flex-1 h-7 text-xs"
             />
             <button onClick={handleSavePreset} className="text-[10px] text-blue-400 px-2">OK</button>
           </div>
@@ -354,19 +352,29 @@ export function ShaderControls({
           </button>
         )}
 
-        <div className="h-px bg-white/10" />
+        <Separator className="bg-white/10" />
 
         {/* Output size */}
         <p className="text-[10px] font-semibold uppercase tracking-widest text-white/30">Output</p>
         <div className="flex items-center gap-1.5">
-          <input
-            type="number" value={outputWidth} onChange={handleOutputW} min={1}
-            className="w-full bg-white/7 border border-white/10 rounded-md px-2 py-1 text-[10px] text-white/70 text-center outline-none"
+          <Label className="sr-only" htmlFor="output-w">Largura</Label>
+          <Input
+            id="output-w"
+            type="number"
+            value={outputWidth}
+            onChange={handleOutputW}
+            min={1}
+            className="h-7 text-xs text-center"
           />
           <span className="text-[10px] text-white/20">×</span>
-          <input
-            type="number" value={outputHeight} onChange={handleOutputH} min={1}
-            className="w-full bg-white/7 border border-white/10 rounded-md px-2 py-1 text-[10px] text-white/70 text-center outline-none"
+          <Label className="sr-only" htmlFor="output-h">Altura</Label>
+          <Input
+            id="output-h"
+            type="number"
+            value={outputHeight}
+            onChange={handleOutputH}
+            min={1}
+            className="h-7 text-xs text-center"
           />
         </div>
         <div className="flex gap-1 flex-wrap">
@@ -391,7 +399,7 @@ export function ShaderControls({
           })}
         </div>
 
-        <div className="h-px bg-white/10" />
+        <Separator className="bg-white/10" />
 
         {/* Image upload */}
         <input ref={fileRef} type="file" accept="image/png" className="hidden" onChange={handleFile} />
@@ -412,30 +420,22 @@ export function ShaderControls({
           </button>
         )}
 
-        <div className="h-px bg-white/10" />
+        <Separator className="bg-white/10" />
 
         {/* Apresentação */}
         <p className="text-[10px] font-semibold uppercase tracking-widest text-white/30">Apresentação</p>
 
-        {/* Always fullscreen toggle */}
         <div className="flex items-center gap-2">
-          <button
-            type="button"
-            onClick={() => onAlwaysFullscreenChange(!alwaysFullscreen)}
-            className={[
-              'relative w-7 h-4 rounded-full transition-colors shrink-0',
-              alwaysFullscreen ? 'bg-blue-500' : 'bg-white/15',
-            ].join(' ')}
-          >
-            <span className={[
-              'absolute top-0.5 w-3 h-3 rounded-full bg-white transition-transform',
-              alwaysFullscreen ? 'translate-x-3.5' : 'translate-x-0.5',
-            ].join(' ')} />
-          </button>
-          <span className="text-[11px] text-white/60">Sempre fullscreen</span>
+          <Switch
+            id="always-fullscreen"
+            checked={alwaysFullscreen}
+            onCheckedChange={onAlwaysFullscreenChange}
+          />
+          <Label htmlFor="always-fullscreen" className="text-[11px] text-white/60 cursor-pointer font-normal">
+            Sempre fullscreen
+          </Label>
         </div>
 
-        {/* Start presentation button */}
         <button
           onClick={onPresentationOpen}
           className="border border-white/20 rounded-lg p-2 text-[10px] text-white/50 hover:text-white/80 hover:border-white/30 transition-colors flex items-center justify-center gap-1.5"
