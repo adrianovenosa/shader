@@ -12,6 +12,7 @@ import {
   type Preset,
 } from '@/lib/presets'
 import { defaultsFromSchema } from '@/lib/renderers/adapter'
+import { loadEffects, saveEffects, DEFAULT_EFFECTS, type EffectState } from '@/lib/effects'
 
 const DEBOUNCE_MS = 300
 
@@ -28,6 +29,7 @@ export default function Page() {
     return defaultsFromSchema(mode.params)
   })
   const [presets, setPresets] = useState<Preset[]>([])
+  const [effects, setEffects] = useState<EffectState>(DEFAULT_EFFECTS)
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const prevModeId = useRef(DEFAULT_MODE_ID)
 
@@ -48,6 +50,7 @@ export default function Page() {
         setPresets(loadPresets(modeId))
       }
     }
+    setEffects(loadEffects())
   }, [])
 
   const handleModeChange = useCallback((id: string) => {
@@ -96,10 +99,15 @@ export default function Page() {
     saveOutputSize({ width: w, height: h, mode })
   }, [])
 
+  const handleEffectsChange = useCallback((e: EffectState) => {
+    setEffects(e)
+    saveEffects(e)
+  }, [])
+
   return (
     <main className="fixed inset-0 overflow-hidden">
       <OutputFrame mode={outputMode} width={outputWidth} height={outputHeight}>
-        <CanvasRenderer modeId={activeModeId} params={params} />
+        <CanvasRenderer modeId={activeModeId} params={params} effects={effects} />
       </OutputFrame>
 
       {imageUrl && (
@@ -125,6 +133,8 @@ export default function Page() {
         onOutputChange={handleOutputChange}
         onImageUpload={setImageUrl}
         imageUrl={imageUrl}
+        effects={effects}
+        onEffectsChange={handleEffectsChange}
       />
     </main>
   )

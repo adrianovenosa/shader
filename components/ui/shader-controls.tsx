@@ -5,6 +5,8 @@ import { MODES } from '@/lib/modes'
 import type { Preset } from '@/lib/presets'
 import type { ParamSchema } from '@/lib/renderers/adapter'
 import { formatParamValue } from '@/lib/format-param'
+import { type EffectState } from '@/lib/effects'
+import { EffectsControls } from '@/components/ui/effects-controls'
 
 interface Props {
   open: boolean
@@ -25,6 +27,8 @@ interface Props {
   onOutputChange: (w: number, h: number, mode: 'full' | 'custom') => void
   onImageUpload: (url: string | null) => void
   imageUrl: string | null
+  effects: EffectState
+  onEffectsChange: (e: EffectState) => void
 }
 
 const OUTPUT_PRESETS = [
@@ -40,6 +44,7 @@ export function ShaderControls({
   params, onParamChange, presets, onSavePreset, onDeletePreset, onLoadPreset,
   outputWidth, outputHeight, outputMode, onOutputChange,
   onImageUpload, imageUrl,
+  effects, onEffectsChange,
 }: Props) {
   const fileRef       = useRef<HTMLInputElement>(null)
   const prevUrlRef    = useRef<string | null>(null)
@@ -289,6 +294,8 @@ export function ShaderControls({
             })}
           </>
         )}
+
+        <EffectsControls effects={effects} onChange={onEffectsChange} />
 
         <div className="h-px bg-white/10" />
 
