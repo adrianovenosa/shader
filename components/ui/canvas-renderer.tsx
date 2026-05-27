@@ -2,23 +2,32 @@
 
 import { useEffect, useRef } from 'react'
 import type { RendererAdapter } from '@/lib/renderers/adapter'
+import type { EffectState } from '@/lib/effects'
 import { MODES } from '@/lib/modes'
 
 interface Props {
-  modeId: string
-  params: Record<string, number>
+  modeId:  string
+  params:  Record<string, number>
+  effects: EffectState
 }
 
-export function CanvasRenderer({ modeId, params }: Props) {
+export function CanvasRenderer({ modeId, params, effects }: Props) {
   const containerRef = useRef<HTMLDivElement>(null)
   const adapterRef   = useRef<RendererAdapter | null>(null)
   const paramsRef    = useRef(params)
+  const effectsRef   = useRef(effects)
 
-  // Keep paramsRef current and push updates to live adapter
+  // Push param updates to live adapter
   useEffect(() => {
     paramsRef.current = params
     adapterRef.current?.updateParams(params)
   }, [params])
+
+  // Push effect updates to live adapter
+  useEffect(() => {
+    effectsRef.current = effects
+    adapterRef.current?.updateEffects?.(effects)
+  }, [effects])
 
   // Swap adapter when mode changes
   useEffect(() => {
@@ -31,6 +40,7 @@ export function CanvasRenderer({ modeId, params }: Props) {
     const mode = MODES.find(m => m.id === modeId) ?? MODES[0]
     const adapter = mode.createAdapter()
     adapter.mount(container, paramsRef.current)
+    adapter.updateEffects?.(effectsRef.current)
     adapterRef.current = adapter
 
     return () => {
