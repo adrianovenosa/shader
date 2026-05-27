@@ -13,6 +13,8 @@ import {
 } from '@/lib/presets'
 import { defaultsFromSchema } from '@/lib/renderers/adapter'
 import { loadEffects, saveEffects, DEFAULT_EFFECTS, type EffectState } from '@/lib/effects'
+import { loadPlaylist, savePlaylist, DEFAULT_PLAYLIST, type PlaylistState } from '@/lib/playlist'
+import { PresentationOverlay } from '@/components/ui/presentation-overlay'
 
 const DEBOUNCE_MS = 300
 
@@ -30,6 +32,9 @@ export default function Page() {
   })
   const [presets, setPresets] = useState<Preset[]>([])
   const [effects, setEffects] = useState<EffectState>(DEFAULT_EFFECTS)
+  const [presentationActive, setPresentationActive] = useState(false)
+  const [playlist, setPlaylist]                     = useState<PlaylistState>(DEFAULT_PLAYLIST)
+  const [alwaysFullscreen, setAlwaysFullscreen]     = useState(false)
   const saveTimer = useRef<ReturnType<typeof setTimeout> | null>(null)
   const prevModeId = useRef(DEFAULT_MODE_ID)
 
@@ -51,6 +56,20 @@ export default function Page() {
       }
     }
     setEffects(loadEffects())
+    const pl = loadPlaylist()
+    setPlaylist(pl)
+    setAlwaysFullscreen(pl.alwaysFullscreen)
+    if (pl.alwaysFullscreen) setPresentationActive(true)
+  }, [])
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.key === 'p' || e.key === 'P') && !e.metaKey && !e.ctrlKey) {
+        setPresentationActive(prev => !prev)
+      }
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
   }, [])
 
   const handleModeChange = useCallback((id: string) => {
@@ -104,6 +123,23 @@ export default function Page() {
     saveEffects(e)
   }, [])
 
+  const handlePlaylistChange = useCallback((p: PlaylistState) => {
+    setPlaylist(p)
+    savePlaylist(p)
+  }, [])
+
+  const handleAlwaysFullscreenChange = useCallback((v: boolean) => {
+    setAlwaysFullscreen(v)
+    const updated = { ...playlist, alwaysFullscreen: v }
+    setPlaylist(updated)
+    savePlaylist(updated)
+  }, [playlist])
+
+  const handlePresentationLoadPreset = useCallback((modeId: string, preset: Preset) => {
+    handleModeChange(modeId)
+    handleLoadPreset(preset)
+  }, [handleModeChange, handleLoadPreset])
+
   return (
     <main className="fixed inset-0 overflow-hidden">
       <OutputFrame mode={outputMode} width={outputWidth} height={outputHeight}>
@@ -135,7 +171,20 @@ export default function Page() {
         imageUrl={imageUrl}
         effects={effects}
         onEffectsChange={handleEffectsChange}
+        playlist={playlist}
+        onPlaylistChange={handlePlaylistChange}
+        onPresentationOpen={() => setPresentationActive(true)}
+        alwaysFullscreen={alwaysFullscreen}
+        onAlwaysFullscreenChange={handleAlwaysFullscreenChange}
       />
+
+      {presentationActive && (
+        <PresentationOverlay
+          playlist={playlist}
+          onExit={() => setPresentationActive(false)}
+          onLoadPreset={handlePresentationLoadPreset}
+        />
+      )}
     </main>
   )
 }
