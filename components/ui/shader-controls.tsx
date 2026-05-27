@@ -34,6 +34,12 @@ interface Props {
   onOutputChange: (w: number, h: number, mode: 'full' | 'custom') => void
   onImageUpload: (url: string | null) => void
   imageUrl: string | null
+  defaultImageBase64: string | null
+  onSetDefaultImage: (base64: string) => void
+  onClearDefaultImage: () => void
+  defaultResolution: { width: number; height: number; mode: 'full' | 'custom' } | null
+  onSetDefaultResolution: () => void
+  onResetToDefaultResolution: () => void
   effects: EffectState
   onEffectsChange: (e: EffectState) => void
   playlist: PlaylistState
@@ -96,6 +102,8 @@ export function ShaderControls({
   params, onParamChange, presets, onSavePreset, onDeletePreset, onLoadPreset,
   outputWidth, outputHeight, outputMode, onOutputChange,
   onImageUpload, imageUrl,
+  defaultImageBase64, onSetDefaultImage, onClearDefaultImage,
+  defaultResolution, onSetDefaultResolution, onResetToDefaultResolution,
   effects, onEffectsChange,
   playlist, onPlaylistChange, onPresentationOpen,
   alwaysFullscreen, onAlwaysFullscreenChange,
@@ -108,6 +116,7 @@ export function ShaderControls({
   const [presetName, setPresetName]   = useState('')
   const [editingKey, setEditingKey] = useState<string | null>(null)
   const [draftValue, setDraftValue] = useState('')
+  const [imageDefaultError, setImageDefaultError] = useState<string | null>(null)
   const cancelEditRef = useRef(false)
 
   const [openSections, setOpenSections] = useState<Record<string, boolean>>(() => {
@@ -172,6 +181,32 @@ export function ShaderControls({
     prevUrlRef.current = url
     onImageUpload(url)
     e.target.value = ''
+  }
+
+  const handleSaveDefaultImage = async () => {
+    if (!imageUrl) return
+    try {
+      const res = await fetch(imageUrl)
+      const blob = await res.blob()
+      await new Promise<void>((resolve, reject) => {
+        const reader = new FileReader()
+        reader.onloadend = () => {
+          const base64 = reader.result as string
+          if (base64.length > 4 * 1024 * 1024) {
+            setImageDefaultError('Imagem muito grande para salvar como padrão (máximo ~3MB)')
+            reject(new Error('too large'))
+            return
+          }
+          setImageDefaultError(null)
+          onSetDefaultImage(base64)
+          resolve()
+        }
+        reader.onerror = () => reject(new Error('read error'))
+        reader.readAsDataURL(blob)
+      })
+    } catch {
+      // size error already surfaced via imageDefaultError state
+    }
   }
 
   const handleSavePreset = () => {
@@ -472,6 +507,26 @@ export function ShaderControls({
                 )
               })}
             </div>
+            <div className="flex gap-1.5">
+              <button
+                onClick={onSetDefaultResolution}
+                className="text-[10px] px-2 py-0.5 rounded transition-colors bg-white/6 text-white/35 border border-white/8 hover:bg-white/10 hover:text-white/60"
+              >
+                Definir como padrão
+              </button>
+              {defaultResolution && (
+                outputMode !== defaultResolution.mode ||
+                outputWidth !== defaultResolution.width ||
+                outputHeight !== defaultResolution.height
+              ) && (
+                <button
+                  onClick={onResetToDefaultResolution}
+                  className="text-[10px] px-2 py-0.5 rounded transition-colors bg-white/6 text-white/35 border border-white/8 hover:bg-white/10 hover:text-white/60"
+                >
+                  Resetar
+                </button>
+              )}
+            </div>
           </AccordionBody>
 
           {/* Imagem section */}
@@ -497,6 +552,33 @@ export function ShaderControls({
                 <span className="text-lg leading-none">🗑</span>
                 <span className="text-xs">Remover imagem</span>
               </button>
+            )}
+            {imageUrl && imageUrl !== defaultImageBase64 && (
+              <button
+                onClick={handleSaveDefaultImage}
+                className="border border-dashed border-indigo-500/30 rounded-lg p-2.5 flex flex-col items-center gap-1 text-indigo-400/60 hover:text-indigo-400 transition-colors"
+              >
+                <span className="text-xs">⭐ Definir como padrão</span>
+              </button>
+            )}
+            {defaultImageBase64 && (
+              <div className="flex flex-col gap-1.5">
+                {imageUrl === defaultImageBase64 && (
+                  <span className="text-[10px] text-indigo-400/70 text-center">Padrão ativa</span>
+                )}
+                {!imageUrl && (
+                  <span className="text-[10px] text-white/40 text-center">Padrão salva</span>
+                )}
+                <button
+                  onClick={onClearDefaultImage}
+                  className="border border-dashed border-red-500/20 rounded-lg p-2 text-xs text-red-400/50 hover:text-red-400/80 transition-colors text-center"
+                >
+                  Remover padrão
+                </button>
+              </div>
+            )}
+            {imageDefaultError && (
+              <p className="text-[10px] text-red-400/80 text-center">{imageDefaultError}</p>
             )}
           </AccordionBody>
 
