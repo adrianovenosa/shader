@@ -11,6 +11,7 @@ import {
   loadOutputSize, saveOutputSize, loadLastMode, saveActiveMode,
   loadDefaultImage, saveDefaultImage, clearDefaultImage,
   loadDefaultResolution, saveDefaultResolution,
+  loadDefaultImageTransform, saveDefaultImageTransform,
   type Preset,
 } from '@/lib/presets'
 import { defaultsFromSchema } from '@/lib/renderers/adapter'
@@ -29,6 +30,7 @@ export default function Page() {
   const [outputHeight, setOutputHeight] = useState(1080)
   const [outputMode,   setOutputMode]   = useState<'full' | 'custom'>('full')
   const [defaultImageBase64,  setDefaultImageBase64]  = useState<string | null>(null)
+  const [imageTransform, setImageTransform] = useState<{ x: number; y: number; scale: number } | null>(null)
   const [defaultResolution,   setDefaultResolution]   = useState<{ width: number; height: number; mode: 'full' | 'custom' } | null>(null)
   const [params,       setParams]       = useState<Record<string, number>>(() => {
     const mode = MODES.find(m => m.id === DEFAULT_MODE_ID) ?? MODES[0]
@@ -58,6 +60,8 @@ export default function Page() {
       setImageUrl(defImg)
       setDefaultImageBase64(defImg)
     }
+    const defTransform = loadDefaultImageTransform()
+    if (defTransform) setImageTransform(defTransform)
 
     if (modeId) {
       const mode = MODES.find(m => m.id === modeId)
@@ -139,12 +143,14 @@ export default function Page() {
 
   const handleSetDefaultImage = useCallback((base64: string) => {
     saveDefaultImage(base64)
+    if (imageTransform) saveDefaultImageTransform(imageTransform)
     setDefaultImageBase64(base64)
-  }, [])
+  }, [imageTransform])
 
   const handleClearDefaultImage = useCallback(() => {
     clearDefaultImage()
     setDefaultImageBase64(null)
+    setImageTransform(null)
   }, [])
 
   const handleSetDefaultResolution = useCallback(() => {
@@ -160,6 +166,11 @@ export default function Page() {
     setOutputMode(defaultResolution.mode)
     saveOutputSize(defaultResolution)
   }, [defaultResolution])
+
+  const handleImageUpload = useCallback((url: string | null) => {
+    setImageUrl(url)
+    if (url !== null) setImageTransform(null)
+  }, [])
 
   const handleEffectsChange = useCallback((e: EffectState) => {
     setEffects(e)
@@ -191,7 +202,12 @@ export default function Page() {
       </OutputFrame>
 
       {imageUrl && (
-        <DraggableImage url={imageUrl} onRemove={() => setImageUrl(null)} />
+        <DraggableImage
+          url={imageUrl}
+          onRemove={() => setImageUrl(null)}
+          initialTransform={imageTransform ?? undefined}
+          onTransformChange={setImageTransform}
+        />
       )}
 
       <ShaderControls
@@ -211,7 +227,7 @@ export default function Page() {
         outputHeight={outputHeight}
         outputMode={outputMode}
         onOutputChange={handleOutputChange}
-        onImageUpload={setImageUrl}
+        onImageUpload={handleImageUpload}
         imageUrl={imageUrl}
         defaultImageBase64={defaultImageBase64}
         onSetDefaultImage={handleSetDefaultImage}

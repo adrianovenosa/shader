@@ -5,16 +5,18 @@ import { useEffect, useRef, useState } from "react"
 interface DraggableImageProps {
   url: string
   onRemove: () => void
+  initialTransform?: { x: number; y: number; scale: number }
+  onTransformChange?: (t: { x: number; y: number; scale: number }) => void
 }
 
 type DragState =
   | { type: "move"; startX: number; startY: number; originX: number; originY: number }
   | { type: "resize"; centerX: number; centerY: number; startDist: number; scaleOrigin: number }
 
-export function DraggableImage({ url, onRemove: _onRemove }: DraggableImageProps) {
+export function DraggableImage({ url, onRemove: _onRemove, initialTransform, onTransformChange }: DraggableImageProps) {
   const containerRef = useRef<HTMLDivElement>(null)
   const handleRef    = useRef<HTMLDivElement>(null)
-  const transform    = useRef({ x: 0, y: 0, scale: 1 })
+  const transform    = useRef(initialTransform ?? { x: 0, y: 0, scale: 1 })
   const dragState    = useRef<DragState | null>(null)
   const [handleVisible, setHandleVisible] = useState(false)
 
@@ -32,6 +34,10 @@ export function DraggableImage({ url, onRemove: _onRemove }: DraggableImageProps
     containerRef.current.style.transform =
       `translate(calc(-50% + ${x}px), calc(-50% + ${y}px)) scale(${scale})`
   }
+
+  useEffect(() => {
+    applyTransform()
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   function clampPosition() {
     const W = window.innerWidth
@@ -90,7 +96,10 @@ export function DraggableImage({ url, onRemove: _onRemove }: DraggableImageProps
       applyTransform()
     }
 
-    const onUp = () => { dragState.current = null }
+    const onUp = () => {
+      dragState.current = null
+      onTransformChange?.(transform.current)
+    }
 
     handle.addEventListener("pointerdown", onHandleDown)
     container.addEventListener("pointerdown", onContainerDown)
